@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Кариночка и Данька: Кристальная Защита</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        #gameContainer {
+            position: relative;
+            width: 1000px;
+            height: 700px;
+            background: linear-gradient(180deg, #f5f7fa 0%, #e8ecf1 100%);
+            border: 5px solid #667eea;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #f8fafb 0%, #ecf0f5 100%);
+        }
+
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            color: #333;
+            font-weight: bold;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .score-panel {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid #667eea;
+        }
+
+        .score-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .score-value {
+            font-size: 32px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .lives-display {
+            font-size: 24px;
+            margin-top: 8px;
+            letter-spacing: 8px;
+        }
+
+        .wave-panel {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid #667eea;
+            text-align: center;
+        }
+
+        .wave-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .wave-number {
+            font-size: 42px;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .wave-bar {
+            width: 250px;
+            height: 8px;
+            background: #ddd;
+            border-radius: 4px;
+            margin-top: 12px;
+            overflow: hidden;
+            border: 1px solid #667eea;
+        }
+
+        .wave-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.2s ease;
+        }
+
+        #menu {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.98);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+        }
+
+        #menu.hidden {
+            display: none;
+        }
+
+        .menu-content {
+            text-align: center;
+        }
+
+        .menu-title {
+            font-size: 56px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+
+        .menu-subtitle {
+            font-size: 20px;
+            color: #999;
+            margin-bottom: 50px;
+        }
+
+        .character-select {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+
+        .character-btn {
+            padding: 25px 35px;
+            font-size: 16px;
+            border: 3px solid;
+            background: white;
+            color: #333;
+            cursor: pointer;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            min-width: 220px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .character-btn.karina {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .character-btn.karina:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .character-btn.danya {
+            border-color: #764ba2;
+            color: #764ba2;
+        }
+
+        .character-btn.danya:hover {
+            background: #764ba2;
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(118, 75, 162, 0.4);
+        }
+
+        .character-btn.both {
+            border-color: #00d084;
+            color: #00d084;
+        }
+
+        .character-btn.both:hover {
+            background: #00d084;
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 208, 132, 0.4);
+        }
+
+        .instructions {
+            color: #666;
+            font-size: 13px;
+            max-width: 400px;
+            line-height: 1.8;
+            background: rgba(102, 126, 234, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        #gameOver {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.98);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+        }
+
+        #gameOver.hidden {
+            display: none;
+        }
+
+        .game-over-content {
+            text-align: center;
+        }
+
+        .game-over-title {
+            font-size: 56px;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .final-stats {
+            font-size: 28px;
+            margin: 20px 0;
+            color: #333;
+            background: rgba(102, 126, 234, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #667eea;
+        }
+
+        .stat-line {
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .stat-value {
+            color: #667eea;
+            font-size: 32px;
+        }
+
+        .restart-btn {
+            margin-top: 40px;
+            padding: 18px 50px;
+            font-size: 18px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .restart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .pause-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99;
+            backdrop-filter: blur(3px);
+        }
+
+        .pause-overlay.hidden {
+            display: none;
+        }
+
+        .pause-text {
+            font-size: 64px;
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            #gameContainer {
+                width: 95vw;
+                height: 140vw;
+                max-width: 500px;
+                max-height: 700px;
+            }
+
+            .menu-title {
+                font-size: 32px;
+            }
+
+            .character-btn {
+                min-width: 100%;
+                padding: 15px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="1000" height="700"></canvas>
+
+        <div id="ui">
+            <div class="score-panel">
+                <div class="score-label">🧙‍♀️ Карина</div>
+                <div class="score-value" id="karina-score">0</div>
+                <div class="lives-display" id="karina-lives">❤️❤️❤️</div>
+            </div>
+
+            <div class="wave-panel">
+                <div class="wave-label">ВОЛНА</div>
+                <div class="wave-number" id="wave">1</div>
+                <div class="wave-bar">
+                    <div class="wave-progress" id="waveProgress"></div>
+                </div>
+            </div>
+
+            <div class="score-panel">
+                <div class="score-label">🧙‍♂️ Данька</div>
+                <div class="score-value" id="danya-score">0</div>
+                <div class="lives-display" id="danya-lives">❤️❤️❤️</div>
+            </div>
+        </div>
+
+        <div id="menu">
+            <div class="menu-content">
+                <h1 class="menu-title">🎮 КАРИНОЧКА И ДАНЬКА</h1>
+                <p class="menu-subtitle">Кристальная Защита</p>
+                <p style="color: #666; margin-bottom: 30px; font-size: 15px;">Кликайте по врагам и бонусам!</p>
+
+                <div class="character-select">
+                    <button class="character-btn karina" onclick="game.startGame('karina')">
+                        🧙‍♀️ КАРИНА<br>
+                        <small>Быстрая стрелец</small>
+                    </button>
+                    <button class="character-btn danya" onclick="game.startGame('danya')">
+                        🧙‍♂️ ДАНЬКА<br>
+                        <small>Мощный танк</small>
+                    </button>
+                    <button class="character-btn both" onclick="game.startGame('both')">
+                        ⚡ ОБА ВМЕСТЕ<br>
+                        <small>Локальный кооп</small>
+                    </button>
+                </div>
+
+                <div class="instructions">
+                    <strong>🖱️ Управление:</strong><br>
+                    Кликайте по врагам и 💣 бонусам!<br><br>
+                    <strong>P</strong> - Пауза | <strong>ESC</strong> - Меню
+                </div>
+            </div>
+        </div>
+
+        <div id="gameOver" class="hidden">
+            <div class="game-over-content">
+                <h1 class="game-over-title">💀 КОНЕЦ ИГРЫ!</h1>
+                <div class="final-stats">
+                    <div class="stat-line">Волна: <span class="stat-value" id="final-wave">1</span></div>
+                    <div class="stat-line">Карина: <span class="stat-value" id="final-karina">0</span> очков</div>
+                    <div class="stat-line">Данька: <span class="stat-value" id="final-danya">0</span> очков</div>
+                </div>
+                <button class="restart-btn" onclick="game.returnToMenu()">↩️ В МЕНЮ</button>
+            </div>
+        </div>
+
+        <div id="pauseOverlay" class="pause-overlay hidden">
+            <div class="pause-text">⏸️ ПАУЗА</div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== КОНСТАНТЫ ====================
+        const CONSTANTS = {
+            CANVAS_WIDTH: 1000,
+            CANVAS_HEIGHT: 700,
+            MAX_ENEMIES: 80,
+            MAX_PARTICLES: 300,
+            MAX_BONUSES: 20,
+        };
+
+        // ==================== GAME CLASS ====================
+        class Game {
+            constructor() {
+                this.canvas = document.getElementById('gameCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.gameState = 'menu';
+                this.mode = null;
+                
+                this.players = [];
+                this.enemies = [];
+                this.bonuses = [];
+                this.particles = [];
+                this.projectiles = [];
+                
+                this.score = { karina: 0, danya: 0 };
+                this.lives = { karina: 3, danya: 3 };
+                this.wave = 1;
+                this.waveTimer = 0;
+                this.spawnTimer = 0;
+                this.bonusSpawnTimer = 0;
+                this.gameTime = 0;
+                
+                this.mouse = { x: 0, y: 0 };
+                this.setupInput();
+                
+                this.audioContext = null;
+                this.initAudio();
+                
+                this.animationFrameId = null;
+                this.lastFrameTime = Date.now();
+                this.deltaTime = 0;
+            }
+
+            setupInput() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'p' || e.key === 'P') {
+                        this.togglePause();
+                    }
+                    if (e.key === 'Escape') {
+                        this.returnToMenu();
+                    }
+                });
+
+                this.canvas.addEventListener('mousemove', (e) => {
+                    const rect = this.canvas.getBoundingClientRect();
+                    this.mouse.x = e.clientX - rect.left;
+                    this.mouse.y = e.clientY - rect.top;
+                });
+
+                this.canvas.addEventListener('click', (e) => {
+                    if (this.gameState === 'playing') {
+                        this.handleClick(e);
+                    }
+                });
+
+                this.canvas.addEventListener('touchstart', (e) => {
+                    const rect = this.canvas.getBoundingClientRect();
+                    const touch = e.touches[0];
+                    const x = touch.clientX - rect.left;
+                    const y = touch.clientY - rect.top;
+                    
+                    if (this.gameState === 'playing') {
+                        this.handleTouchClick(x, y);
+                    }
+                });
+            }
+
+            handleClick(e) {
+                const rect = this.canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                this.handleTouchClick(x, y);
+            }
+
+            handleTouchClick(x, y) {
+                // Создаём визуальный эффект выстрела
+                this.createShootEffect(x, y);
+
+                // Проверяем попадание по бонусам первыми (они приоритетнее)
+                for (let i = this.bonuses.length - 1; i >= 0; i--) {
+                    const bonus = this.bonuses[i];
+                    const dx = x - bonus.x;
+                    const dy = y - bonus.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < bonus.radius + 20) {
+                        this.onBonusHit(bonus);
+                        return; // Выходим после попадания в бонус
+                    }
+                }
+
+                // Проверяем попадание по врагам
+                for (let i = this.enemies.length - 1; i >= 0; i--) {
+                    const enemy = this.enemies[i];
+                    const dx = x - enemy.x;
+                    const dy = y - enemy.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < enemy.radius + 20) {
+                        this.onEnemyHit(enemy);
+                        break;
+                    }
+                }
+            }
+
+            createShootEffect(x, y) {
+                // Волна от выстрела
+                this.createShootWave(x, y);
+                
+                // Звук выстрела
+                this.playSound(1200, 0.05);
+                this.playSound(800, 0.05);
+            }
+
+            createShootWave(x, y) {
+                // Создаём расширяющийся круг в месте клика
+                for (let i = 0; i < 12; i++) {
+                    const angle = (Math.PI * 2 * i) / 12;
+                    const vx = Math.cos(angle) * 6;
+                    const vy = Math.sin(angle) * 6;
+                    
+                    const particle = new Particle(
+                        x, y, vx, vy,
+                        '#667eea',
+                        0.4
+                    );
+                    this.particles.push(particle);
+                }
+
+                // Яркий центр выстрела
+                for (let i = 0; i < 6; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const velocity = 3 + Math.random() * 3;
+                    const particle = new Particle(
+                        x, y,
+                        Math.cos(angle) * velocity,
+                        Math.sin(angle) * velocity,
+                        '#ff00ff',
+                        0.3
+                    );
+                    this.particles.push(particle);
+                }
+            }
+
+            initAudio() {
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {
+                    console.log('Audio context not supported');
+                }
+            }
+
+            playSound(frequency, duration, type = 'sine', volume = 0.3) {
+                if (!this.audioContext) return;
+                try {
+                    const now = this.audioContext.currentTime;
+                    const osc = this.audioContext.createOscillator();
+                    const gain = this.audioContext.createGain();
+                    
+                    osc.connect(gain);
+                    gain.connect(this.audioContext.destination);
+                    
+                    osc.frequency.value = frequency;
+                    osc.type = type;
+                    
+                    gain.gain.setValueAtTime(volume, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + duration);
+                    
+                    osc.start(now);
+                    osc.stop(now + duration);
+                } catch (e) {
+                    // Ignore audio errors
+                }
+            }
+
+            startGame(mode) {
+                this.mode = mode;
+                this.gameState = 'playing';
+                this.players = [];
+                this.enemies = [];
+                this.bonuses = [];
+                this.particles = [];
+                this.projectiles = [];
+                this.score = { karina: 0, danya: 0 };
+                this.lives = { karina: 3, danya: 3 };
+                this.wave = 1;
+                this.waveTimer = 0;
+                this.gameTime = 0;
+                
+                document.getElementById('menu').classList.add('hidden');
+                document.getElementById('gameOver').classList.add('hidden');
+                document.getElementById('pauseOverlay').classList.add('hidden');
+                
+                if (mode === 'karina' || mode === 'both') {
+                    this.players.push(new Player('karina', this));
+                }
+                if (mode === 'danya' || mode === 'both') {
+                    this.players.push(new Player('danya', this));
+                }
+                
+                this.playSound(400, 0.2);
+                this.animate();
+            }
+
+            togglePause() {
+                if (this.gameState !== 'playing') return;
+                
+                this.gameState = this.gameState === 'playing' ? 'paused' : 'playing';
+                
+                const overlay = document.getElementById('pauseOverlay');
+                if (this.gameState === 'paused') {
+                    overlay.classList.remove('hidden');
+                    this.playSound(600, 0.1);
+                } else {
+                    overlay.classList.add('hidden');
+                    this.playSound(400, 0.1);
+                }
+            }
+
+            returnToMenu() {
+                this.gameState = 'menu';
+                this.players = [];
+                this.enemies = [];
+                this.bonuses = [];
+                this.particles = [];
+                this.projectiles = [];
+                
+                document.getElementById('menu').classList.remove('hidden');
+                document.getElementById('gameOver').classList.add('hidden');
+                document.getElementById('pauseOverlay').classList.add('hidden');
+                
+                this.updateUI();
+                
+                if (this.animationFrameId) {
+                    cancelAnimationFrame(this.animationFrameId);
+                }
+            }
+
+            update() {
+                if (this.gameState !== 'playing') return;
+                
+                this.gameTime += this.deltaTime / 1000;
+                this.waveTimer += this.deltaTime / 1000;
+                
+                // Волны прогрессирует каждые 30 секунд
+                if (this.waveTimer > 30) {
+                    this.wave++;
+                    this.waveTimer = 0;
+                }
+                
+                // Спаун врагов
+                const waveConfig = this.getWaveConfig();
+                this.spawnTimer += this.deltaTime;
+                const spawnInterval = 1000 / waveConfig.spawnRate;
+                
+                if (this.spawnTimer > spawnInterval && this.enemies.length < CONSTANTS.MAX_ENEMIES) {
+                    this.spawnEnemy(waveConfig.speed);
+                    this.spawnTimer = 0;
+                }
+
+                // Спаун бонусов
+                this.bonusSpawnTimer += this.deltaTime;
+                if (this.bonusSpawnTimer > 3000 && this.bonuses.length < CONSTANTS.MAX_BONUSES) {
+                    this.spawnBonus();
+                    this.bonusSpawnTimer = 0;
+                }
+                
+                // Обновляем врагов
+                for (let i = this.enemies.length - 1; i >= 0; i--) {
+                    const enemy = this.enemies[i];
+                    enemy.update();
+                    
+                    // Упал враг
+                    if (enemy.y > CONSTANTS.CANVAS_HEIGHT) {
+                        this.enemies.splice(i, 1);
+                        
+                        const randomPlayer = this.players[Math.floor(Math.random() * this.players.length)];
+                        this.lives[randomPlayer.type]--;
+                        
+                        this.playSound(200, 0.3);
+                        
+                        if (this.lives[randomPlayer.type] <= 0) {
+                            this.gameOver();
+                        }
+                    }
+                }
+
+                // Обновляем бонусы
+                for (let i = this.bonuses.length - 1; i >= 0; i--) {
+                    const bonus = this.bonuses[i];
+                    bonus.update();
+                    
+                    if (bonus.y > CONSTANTS.CANVAS_HEIGHT) {
+                        this.bonuses.splice(i, 1);
+                    }
+                }
+                
+                // Обновляем частицы
+                for (let i = this.particles.length - 1; i >= 0; i--) {
+                    const particle = this.particles[i];
+                    particle.update();
+                    if (particle.life <= 0) {
+                        this.particles.splice(i, 1);
+                    }
+                }
+                
+                this.updateUI();
+            }
+
+            getWaveConfig() {
+                const baseSpawnRate = 2 + (this.wave - 1) * 0.5;
+                const baseSpeed = 2 + (this.wave - 1) * 0.3;
+                return {
+                    spawnRate: Math.min(baseSpawnRate, 10),
+                    speed: Math.min(baseSpeed, 6),
+                };
+            }
+
+            spawnEnemy(speed) {
+                const x = Math.random() * (CONSTANTS.CANVAS_WIDTH - 80) + 40;
+                const enemy = new Enemy(x, -30, speed, this);
+                this.enemies.push(enemy);
+            }
+
+            spawnBonus() {
+                const x = Math.random() * (CONSTANTS.CANVAS_WIDTH - 80) + 40;
+                const bonus = new Bonus(x, -30, 1.5, this);
+                this.bonuses.push(bonus);
+            }
+
+            onEnemyHit(enemy) {
+                this.enemies.splice(this.enemies.indexOf(enemy), 1);
+                
+                const baseScore = 10;
+                const multiplier = 1 + (this.wave - 1) * 0.1;
+                const score = Math.floor(baseScore * multiplier);
+                
+                if (this.mode === 'both') {
+                    const player = this.players[Math.floor(Math.random() * this.players.length)];
+                    this.score[player.type] += score;
+                } else if (this.mode === 'karina') {
+                    this.score.karina += score;
+                } else {
+                    this.score.danya += score;
+                }
+                
+                this.playSound(800, 0.15);
+                this.createExplosion(enemy.x, enemy.y, enemy.color.main);
+            }
+
+            onBonusHit(bonus) {
+                this.bonuses.splice(this.bonuses.indexOf(bonus), 1);
+                
+                // Огромный взрыв!
+                this.createBigExplosion(bonus.x, bonus.y);
+                
+                // Убиваем всех врагов в радиусе
+                const explosionRadius = 200;
+                for (let i = this.enemies.length - 1; i >= 0; i--) {
+                    const enemy = this.enemies[i];
+                    const dx = bonus.x - enemy.x;
+                    const dy = bonus.y - enemy.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < explosionRadius) {
+                        const baseScore = 10;
+                        const multiplier = 1 + (this.wave - 1) * 0.1;
+                        const score = Math.floor(baseScore * multiplier * 2); // Двойные очки за бонус
+                        
+                        if (this.mode === 'both') {
+                            const player = this.players[Math.floor(Math.random() * this.players.length)];
+                            this.score[player.type] += score;
+                        } else if (this.mode === 'karina') {
+                            this.score.karina += score;
+                        } else {
+                            this.score.danya += score;
+                        }
+                        
+                        this.enemies.splice(i, 1);
+                        this.createExplosion(enemy.x, enemy.y, '#ff00ff');
+                    }
+                }
+                
+                // Громкий звук
+                this.playSound(400, 0.2);
+                this.playSound(600, 0.15);
+            }
+
+            createExplosion(x, y, color) {
+                for (let i = 0; i < 15; i++) {
+                    const angle = (Math.PI * 2 * i) / 15;
+                    const velocity = 4 + Math.random() * 4;
+                    const particle = new Particle(
+                        x, y,
+                        Math.cos(angle) * velocity,
+                        Math.sin(angle) * velocity,
+                        color,
+                        0.6
+                    );
+                    this.particles.push(particle);
+                }
+            }
+
+            createBigExplosion(x, y) {
+                // Много частиц разных цветов
+                const colors = ['#ff6b6b', '#ffd93d', '#ff00ff', '#00ff88', '#00d4ff'];
+                
+                for (let i = 0; i < 40; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const velocity = 5 + Math.random() * 8;
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    const particle = new Particle(
+                        x, y,
+                        Math.cos(angle) * velocity,
+                        Math.sin(angle) * velocity,
+                        color,
+                        0.8
+                    );
+                    this.particles.push(particle);
+                }
+
+                // Ударная волна
+                for (let i = 0; i < 20; i++) {
+                    const angle = (Math.PI * 2 * i) / 20;
+                    const particle = new Particle(
+                        x, y,
+                        Math.cos(angle) * 8,
+                        Math.sin(angle) * 8,
+                        '#ffd93d',
+                        0.5
+                    );
+                    this.particles.push(particle);
+                }
+            }
+
+            gameOver() {
+                this.gameState = 'gameover';
+                document.getElementById('final-wave').textContent = this.wave;
+                document.getElementById('final-karina').textContent = this.score.karina;
+                document.getElementById('final-danya').textContent = this.score.danya;
+                document.getElementById('gameOver').classList.remove('hidden');
+                
+                this.playSound(150, 0.5);
+            }
+
+            updateUI() {
+                document.getElementById('karina-score').textContent = this.score.karina;
+                document.getElementById('danya-score').textContent = this.score.danya;
+                document.getElementById('wave').textContent = this.wave;
+                
+                const livesKarina = '❤️'.repeat(Math.max(0, this.lives.karina)) + 
+                    '🖤'.repeat(Math.max(0, 3 - this.lives.karina));
+                const livesDanya = '❤️'.repeat(Math.max(0, this.lives.danya)) + 
+                    '🖤'.repeat(Math.max(0, 3 - this.lives.danya));
+                
+                document.getElementById('karina-lives').textContent = livesKarina;
+                document.getElementById('danya-lives').textContent = livesDanya;
+                
+                const waveProgress = (this.waveTimer / 30) * 100;
+                document.getElementById('waveProgress').style.width = waveProgress + '%';
+            }
+
+            draw() {
+                // Очистка
+                this.ctx.fillStyle = '#f8fafb';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Сетка фона
+                this.ctx.strokeStyle = 'rgba(102, 126, 234, 0.05)';
+                this.ctx.lineWidth = 1;
+                for (let i = 0; i < this.canvas.width; i += 50) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(i, 0);
+                    this.ctx.lineTo(i, this.canvas.height);
+                    this.ctx.stroke();
+                }
+                for (let i = 0; i < this.canvas.height; i += 50) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(0, i);
+                    this.ctx.lineTo(this.canvas.width, i);
+                    this.ctx.stroke();
+                }
+                
+                // Враги
+                for (let enemy of this.enemies) {
+                    enemy.draw(this.ctx);
+                }
+
+                // Бонусы
+                for (let bonus of this.bonuses) {
+                    bonus.draw(this.ctx);
+                }
+                
+                // Частицы
+                for (let particle of this.particles) {
+                    particle.draw(this.ctx);
+                }
+                
+                // Целевой круг под мышью
+                if (this.gameState === 'playing') {
+                    this.ctx.strokeStyle = 'rgba(102, 126, 234, 0.3)';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.beginPath();
+                    this.ctx.arc(this.mouse.x, this.mouse.y, 30, 0, Math.PI * 2);
+                    this.ctx.stroke();
+                }
+            }
+
+            animate() {
+                const now = Date.now();
+                this.deltaTime = now - this.lastFrameTime;
+                this.lastFrameTime = now;
+                
+                this.update();
+                this.draw();
+                
+                if (this.gameState !== 'menu' && this.gameState !== 'gameover') {
+                    this.animationFrameId = requestAnimationFrame(() => this.animate());
+                }
+            }
+        }
+
+        // ==================== PLAYER CLASS ====================
+        class Player {
+            constructor(type, game) {
+                this.type = type;
+                this.game = game;
+            }
+        }
+
+        // ==================== ENEMY CLASS ====================
+        class Enemy {
+            constructor(x, y, speed, game) {
+                this.x = x;
+                this.y = y;
+                this.speed = speed;
+                this.game = game;
+                this.radius = 25;
+                this.rotation = 0;
+                this.rotationSpeed = (Math.random() - 0.5) * 0.15;
+                this.glow = 0;
+                this.glowDirection = 1;
+                this.color = this.getRandomColor();
+            }
+
+            getRandomColor() {
+                const colors = [
+                    { main: '#667eea', light: '#8ba3f5' },
+                    { main: '#764ba2', light: '#9b6cb5' },
+                    { main: '#00d084', light: '#33e0a1' },
+                    { main: '#ff6b6b', light: '#ff8a8a' },
+                ];
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+
+            update() {
+                this.y += this.speed;
+                this.rotation += this.rotationSpeed;
+                
+                this.glow += this.glowDirection * 0.06;
+                if (this.glow > 1 || this.glow < 0.4) {
+                    this.glowDirection *= -1;
+                }
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                
+                const glowAlpha = 0.4 + this.glow * 0.6;
+                
+                ctx.fillStyle = this.color.main;
+                ctx.globalAlpha = glowAlpha;
+                ctx.beginPath();
+                ctx.moveTo(0, -this.radius);
+                ctx.lineTo(this.radius, 0);
+                ctx.lineTo(0, this.radius);
+                ctx.lineTo(-this.radius, 0);
+                ctx.closePath();
+                ctx.fill();
+                
+                ctx.globalAlpha = 1;
+                ctx.strokeStyle = this.color.main;
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                
+                ctx.fillStyle = this.color.light;
+                ctx.globalAlpha = this.glow * 0.7;
+                ctx.beginPath();
+                ctx.arc(0, 0, this.radius * 0.5, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.globalAlpha = 0.3;
+                ctx.strokeStyle = this.color.main;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.arc(0, 0, this.radius + 10, 0, Math.PI * 2);
+                ctx.stroke();
+                
+                ctx.globalAlpha = 1;
+                ctx.restore();
+            }
+        }
+
+        // ==================== BONUS CLASS ====================
+        class Bonus {
+            constructor(x, y, speed, game) {
+                this.x = x;
+                this.y = y;
+                this.speed = speed;
+                this.game = game;
+                this.radius = 20;
+                this.rotation = 0;
+                this.rotationSpeed = 0.1;
+                this.glow = 0;
+                this.glowDirection = 1;
+            }
+
+            update() {
+                this.y += this.speed;
+                this.rotation += this.rotationSpeed;
+                
+                this.glow += this.glowDirection * 0.08;
+                if (this.glow > 1 || this.glow < 0) {
+                    this.glowDirection *= -1;
+                }
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                
+                // Бомба 💣
+                ctx.fillStyle = '#333';
+                ctx.globalAlpha = 0.8 + this.glow * 0.2;
+                ctx.beginPath();
+                ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Фитиль
+                ctx.strokeStyle = '#ff6b6b';
+                ctx.lineWidth = 3;
+                ctx.globalAlpha = 1;
+                ctx.beginPath();
+                ctx.moveTo(0, -this.radius);
+                ctx.quadraticCurveTo(5, -this.radius - 10, 0, -this.radius - 15);
+                ctx.stroke();
+                
+                // Сияние
+                ctx.globalAlpha = 0.5;
+                ctx.strokeStyle = '#ffd93d';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(0, 0, this.radius + 15, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Яркий центр
+                ctx.globalAlpha = 0.3 + this.glow * 0.3;
+                ctx.fillStyle = '#ffd93d';
+                ctx.beginPath();
+                ctx.arc(0, 0, this.radius * 0.3, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.globalAlpha = 1;
+                ctx.restore();
+            }
+        }
+
+        // ==================== PARTICLE CLASS ====================
+        class Particle {
+            constructor(x, y, vx, vy, color, life) {
+                this.x = x;
+                this.y = y;
+                this.vx = vx;
+                this.vy = vy;
+                this.color = color;
+                this.life = life;
+                this.maxLife = life;
+                this.size = 4 + Math.random() * 6;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += 0.15;
+                this.life -= 0.016;
+            }
+
+            draw(ctx) {
+                const opacity = this.life / this.maxLife;
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = opacity;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+        const game = new Game();
+    </script>
+</body>
+</html>
