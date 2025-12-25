@@ -1516,7 +1516,7 @@
                 this.skillDuration = 0;
                 this.skillTimers = { speed: 0, accuracy: 0, armor: 0 };
                 this.skillCooldowns = { speed: 0, accuracy: 0, armor: 0 };
-                this.skillLevel = { speed: 1, accuracy: 1, armor: 1, power: 1, greed: 1 };
+                this.skillLevel = { speed: 1, accuracy: 1, armor: 1 };
                 
                 this.mouse = { x: 0, y: 0 };
                 this.setupInput();
@@ -1527,9 +1527,6 @@
                 this.animationFrameId = null;
                 this.lastFrameTime = Date.now();
                 this.deltaTime = 0;
-                this.vibrationCooldown = 0;
-                
-                this.loadProgress();
             }
 
             setupInput() {
@@ -1668,9 +1665,8 @@
             }
 
             triggerVibration(duration = 50) {
-                if (navigator.vibrate && this.vibrationCooldown <= 0) {
+                if (navigator.vibrate) {
                     navigator.vibrate(duration);
-                    this.vibrationCooldown = 30;
                 }
             }
 
@@ -1750,11 +1746,6 @@
                 this.particles = [];
                 this.floatingTexts = [];
                 
-                if (this.animationFrameId) {
-                    cancelAnimationFrame(this.animationFrameId);
-                    this.animationFrameId = null;
-                }
-                
                 document.getElementById('menu').classList.remove('hidden');
                 document.getElementById('gameOver').classList.add('hidden');
                 document.getElementById('pauseOverlay').classList.add('hidden');
@@ -1763,7 +1754,10 @@
                 this.updateUI();
                 this.updateRecordsDisplay();
                 this.updateSkillDisplay();
-                this.saveProgress();
+                
+                if (this.animationFrameId) {
+                    cancelAnimationFrame(this.animationFrameId);
+                }
             }
 
             update() {
@@ -1772,7 +1766,6 @@
                 this.gameTime += this.deltaTime / 1000;
                 this.waveTimer += this.deltaTime / 1000;
                 this.comboResetTimer -= this.deltaTime;
-                this.vibrationCooldown -= this.deltaTime;
                 
                 this.skillTimers.speed -= this.deltaTime;
                 this.skillTimers.accuracy -= this.deltaTime;
@@ -2012,12 +2005,10 @@
                 let score = 0;
                 let killed = 0;
                 const explosionRadius = 200;
-                const bonusX = 500;
-                const bonusY = 350;
                 
                 for (let i = this.enemies.length - 1; i >= 0; i--) {
                     const enemy = this.enemies[i];
-                    const dist = Math.hypot(bonusX - enemy.x, bonusY - enemy.y);
+                    const dist = Math.hypot(bonus?.x - enemy.x || 500 - enemy.x, bonus?.y - enemy.y || 350 - enemy.y);
                     
                     if (dist < explosionRadius) {
                         const s = Math.floor(20 * (1 + (this.wave - 1) * 0.2));
@@ -2293,39 +2284,6 @@
                     this.ctx.stroke();
                 }
                 
-                if (this.mode === 'both' && this.players.length === 2) {
-                    this.drawSplitScreen();
-                } else {
-                    this.drawGameScreen(0, 0, this.canvas.width, this.canvas.height);
-                }
-            }
-
-            drawSplitScreen() {
-                const midX = this.canvas.width / 2;
-                
-                this.ctx.save();
-                this.ctx.beginPath();
-                this.ctx.rect(0, 0, midX, this.canvas.height);
-                this.ctx.clip();
-                this.drawGameScreen(0, 0, midX, this.canvas.height, 'karina');
-                this.ctx.restore();
-                
-                this.ctx.save();
-                this.ctx.beginPath();
-                this.ctx.rect(midX, 0, midX, this.canvas.height);
-                this.ctx.clip();
-                this.drawGameScreen(midX, 0, midX, this.canvas.height, 'danya');
-                this.ctx.restore();
-                
-                this.ctx.strokeStyle = '#667eea';
-                this.ctx.lineWidth = 3;
-                this.ctx.beginPath();
-                this.ctx.moveTo(midX, 0);
-                this.ctx.lineTo(midX, this.canvas.height);
-                this.ctx.stroke();
-            }
-
-            drawGameScreen(offsetX, offsetY, width, height, playerFilter = null) {
                 for (let enemy of this.enemies) {
                     enemy.draw(this.ctx);
                 }
@@ -2407,44 +2365,6 @@
                 document.getElementById('best-combo').textContent = this.records.bestCombo || 0;
                 document.getElementById('crit-count').textContent = this.records.criticalHits || 0;
                 document.getElementById('games-played').textContent = this.records.gamesPlayed || 0;
-            }
-
-            updateSkillDisplay() {
-                document.getElementById('skill-points-display').textContent = this.totalSkillPoints;
-                document.getElementById('skill-speed-level').textContent = this.skillLevel.speed;
-                document.getElementById('skill-accuracy-level').textContent = this.skillLevel.accuracy;
-                document.getElementById('skill-armor-level').textContent = this.skillLevel.armor;
-                document.getElementById('skill-power-level').textContent = this.skillLevel.power;
-                document.getElementById('skill-greed-level').textContent = this.skillLevel.greed;
-            }
-
-            upgradeSkill(skillName) {
-                const skillLevels = {
-                    speed: { max: 4, cost: 30 },
-                    accuracy: { max: 4, cost: 40 },
-                    armor: { max: 4, cost: 35 },
-                    power: { max: 4, cost: 45 },
-                    greed: { max: 4, cost: 50 }
-                };
-
-                const skill = skillLevels[skillName];
-                if (!skill) return;
-
-                if (this.skillLevel[skillName] >= skill.max) {
-                    this.showAchievement('⚠️ МАКС УРОВЕНЬ!');
-                    return;
-                }
-
-                if (this.totalSkillPoints >= skill.cost) {
-                    this.totalSkillPoints -= skill.cost;
-                    this.skillLevel[skillName]++;
-                    this.saveProgress();
-                    this.updateSkillDisplay();
-                    this.showAchievement(`⭐ ${skillName.toUpperCase()} уровень ${this.skillLevel[skillName]}!`);
-                    this.playSound(800, 0.2);
-                } else {
-                    this.showAchievement('❌ Не хватает очков!');
-                }
             }
 
             clearRecords() {
