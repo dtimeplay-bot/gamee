@@ -646,6 +646,56 @@
             cursor: not-allowed;
         }
 
+        .skill-upgrade-section {
+            background: rgba(102, 126, 234, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            margin: 15px auto;
+            max-width: 90%;
+            font-size: 12px;
+            color: #333;
+        }
+
+        .upgrade-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .upgrade-item:last-child {
+            border-bottom: none;
+        }
+
+        .upgrade-name {
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .upgrade-btn {
+            padding: 6px 12px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .upgrade-btn:hover:not(:disabled) {
+            background: #667eea;
+            color: white;
+        }
+
+        .upgrade-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .leaderboard-table {
             background: rgba(102, 126, 234, 0.05);
             border: 2px solid #667eea;
@@ -1305,6 +1355,13 @@
 
                 <div id="tab-features" class="tab-content">
                     <div class="features-list">
+                        <strong>🎮 РЕЖИМЫ ИГРЫ</strong>
+                        <div>🧙‍♀️ КАРИНА - играет одна, 3 жизни</div>
+                        <div>🧙‍♂️ ДАНЬКА - играет один, 3 жизни</div>
+                        <div>⚡ ОБА ВМЕСТЕ - КО-ОП режим!</div>
+                        <div>При "ОБА" враги распределяются</div>
+                        <div>Очки считаются раздельно</div>
+
                         <strong>🎁 ПЯТЬ СУПЕРБОНУСОВ</strong>
                         <div>💣 БОМБА - взрыв врагов</div>
                         <div>💎 КРИСТАЛЛ - много очков</div>
@@ -1326,6 +1383,52 @@
                         <div>🏃 УСКОРЕНИЕ - быстрее убивай</div>
                         <div>🎯 ТОЧНОСТЬ - больше критов</div>
                         <div>🛡️ БРОНЯ - меньше урона</div>
+                    </div>                        <div class="skill-upgrade-section">
+                        <strong style="display: block; margin-bottom: 10px; color: #667eea;">⭐ УЛУЧШЕНИЯ УМЕНИЙ</strong>
+                        <div style="background: rgba(255, 217, 61, 0.1); padding: 10px; border-radius: 6px; margin-bottom: 10px; border-left: 3px solid #ffd93d;">
+                            <div style="font-size: 11px; color: #ff6b6b; font-weight: bold;">💡 КАК ПОЛУЧИТЬ ОЧКИ УМЕНИЙ (во время игры):</div>
+                            <div style="font-size: 10px; color: #666; margin-top: 5px;">💥 КРИТ УДАР (жёлто-красная вспышка) = <span style="color: #ff6b6b; font-weight: bold;">+2 очка</span></div>
+                            <div style="font-size: 10px; color: #666;">⚔️ ОБЫЧНЫЙ УДАР = <span style="color: #667eea; font-weight: bold;">+1 очко</span></div>
+                            <div style="font-size: 10px; color: #00d084; font-weight: bold; margin-top: 8px;">📊 ВИДИТЕ ОЧКИ: глядите на ЗВЁЗДОЧКУ ⭐ в правом нижнем углу!</div>
+                            
+                            <div style="font-size: 10px; color: #667eea; font-weight: bold; margin-top: 10px;">СТОИМОСТЬ УЛУЧШЕНИЯ:</div>
+                            <div style="font-size: 10px; color: #667eea;">Уровень 1→2: 50 очков</div>
+                            <div style="font-size: 10px; color: #667eea;">Уровень 2→3: 100 очков</div>
+                            <div style="font-size: 10px; color: #667eea;">Уровень 3→4: 150 очков</div>
+                            
+                            <div style="font-size: 10px; color: #00d084; font-weight: bold; margin-top: 10px;">💾 ОЧКИ СОХРАНЯЮТСЯ между играми!</div>
+                            <div style="font-size: 10px; color: #666; margin-top: 5px;">Вы можете постепенно улучшать навыки</div>
+                        </div>
+                        <div style="background: rgba(102, 126, 234, 0.15); padding: 10px; border-radius: 6px; margin-bottom: 15px; text-align: center; border: 2px solid #667eea;">
+                            <div style="font-size: 14px; font-weight: bold; color: #667eea;">⭐ ВАШИ ОЧКИ НАВЫКОВ</div>
+                            <div style="font-size: 22px; color: #ff6b6b; font-weight: bold; margin-top: 5px;" id="skill-points-display">0</div>
+                            <div style="font-size: 10px; color: #667eea; margin-top: 5px;">Всего собрано за все игры</div>
+                        </div>
+                        
+                        <div class="upgrade-item">
+                            <div class="upgrade-name">🏃 УСКОРЕНИЕ</div>
+                            <div style="font-size: 10px;">
+                                <div>Уровень: <span id="skill-speed-level" style="color: #667eea; font-weight: bold;">1</span>/4</div>
+                                <div style="color: #ff6b6b; margin-top: 3px;">Стоимость: <span id="speed-cost" style="font-weight: bold;">50</span> очков</div>
+                            </div>
+                            <button class="upgrade-btn" id="speed-btn" onclick="game.upgradeSkill('speed')">+</button>
+                        </div>
+                        <div class="upgrade-item">
+                            <div class="upgrade-name">🎯 ТОЧНОСТЬ</div>
+                            <div style="font-size: 10px;">
+                                <div>Уровень: <span id="skill-accuracy-level" style="color: #667eea; font-weight: bold;">1</span>/4</div>
+                                <div style="color: #ff6b6b; margin-top: 3px;">Стоимость: <span id="accuracy-cost" style="font-weight: bold;">50</span> очков</div>
+                            </div>
+                            <button class="upgrade-btn" id="accuracy-btn" onclick="game.upgradeSkill('accuracy')">+</button>
+                        </div>
+                        <div class="upgrade-item">
+                            <div class="upgrade-name">🛡️ БРОНЯ</div>
+                            <div style="font-size: 10px;">
+                                <div>Уровень: <span id="skill-armor-level" style="color: #667eea; font-weight: bold;">1</span>/4</div>
+                                <div style="color: #ff6b6b; margin-top: 3px;">Стоимость: <span id="armor-cost" style="font-weight: bold;">50</span> очков</div>
+                            </div>
+                            <button class="upgrade-btn" id="armor-btn" onclick="game.upgradeSkill('armor')">+</button>
+                        </div>
                     </div>
                 </div>
 
@@ -1429,6 +1532,11 @@
                 this.battlePassLevel = 0;
                 this.battlePassProgress = 0;
                 this.challengeProgress = 0;
+                this.skillPoints = 0;
+                this.totalSkillPoints = 0;
+                
+                // Загружаем сохранённые очки и уровни
+                this.loadProgress();
                 this.bossWaveInterval = 5;
                 this.isBossWave = false;
                 
@@ -1444,6 +1552,8 @@
                 this.skillTimers = { speed: 0, accuracy: 0, armor: 0 };
                 this.skillCooldowns = { speed: 0, accuracy: 0, armor: 0 };
                 this.skillLevel = { speed: 1, accuracy: 1, armor: 1 };
+                this.skillPoints = 0;
+                this.totalSkillPoints = 0;
                 
                 this.comboDisplay = null;
                 this.comboDuration = 0;
@@ -1612,6 +1722,7 @@
                 this.battlePassLevel = 0;
                 this.battlePassProgress = 0;
                 this.challengeProgress = 0;
+                this.skillPoints = 0;  // Обнуляем очки в игре для новой игры
                 
                 document.getElementById('menu').classList.add('hidden');
                 document.getElementById('gameOver').classList.add('hidden');
@@ -1625,6 +1736,7 @@
                 }
                 
                 this.playSound(400, 0.2);
+                console.log('🎮 Игра запущена с режимом:', mode);
                 this.animate();
             }
 
@@ -1651,11 +1763,15 @@
                 this.particles = [];
                 this.floatingTexts = [];
                 
+                // Сохраняем прогресс перед возвратом
+                this.saveProgress();
+                
                 document.getElementById('menu').classList.remove('hidden');
                 document.getElementById('gameOver').classList.add('hidden');
                 document.getElementById('pauseOverlay').classList.add('hidden');
                 
                 this.updateUI();
+                this.updateSkillDisplay();
                 
                 if (this.animationFrameId) {
                     cancelAnimationFrame(this.animationFrameId);
@@ -1891,10 +2007,14 @@
                 
                 if (isCritical) {
                     this.critialHitCount++;
+                    this.skillPoints += 2;
+                    this.totalSkillPoints += 2;
                     this.createFloatingText(enemy.x, enemy.y, `💥 КРИТ!`, '#ff00ff');
                     this.createExplosion(enemy.x, enemy.y, '#ff00ff');
                     this.playSound(1200, 0.12);
                 } else {
+                    this.skillPoints += 1;
+                    this.totalSkillPoints += 1;
                     this.createExplosion(enemy.x, enemy.y, enemy.color.main);
                 }
                 
@@ -2165,8 +2285,17 @@
                 document.getElementById('multiplier').textContent = this.multiplier.toFixed(1) + 'x';
                 document.getElementById('combo').textContent = this.combo;
                 document.getElementById('bp-level').textContent = this.battlePassLevel;
-                document.getElementById('challenge').textContent = this.challengeProgress;
+                document.getElementById('challenge').textContent = this.skillPoints;
                 document.getElementById('difficulty-level').textContent = this.difficulty;
+                
+                // Обновляем отображение очков во время игры
+                if (this.skillPoints > 0) {
+                    document.getElementById('challenge').style.color = '#00d084';
+                    document.getElementById('challenge').style.fontWeight = 'bold';
+                } else {
+                    document.getElementById('challenge').style.color = '#667eea';
+                    document.getElementById('challenge').style.fontWeight = 'normal';
+                }
                 
                 if (this.activeSkill) {
                     document.getElementById('active-skill').textContent = this.activeSkill;
@@ -2241,6 +2370,51 @@
                 if (this.gameState !== 'menu' && this.gameState !== 'gameover') {
                     this.animationFrameId = requestAnimationFrame(() => this.animate());
                 }
+            }
+            
+            saveProgress() {
+                const progress = {
+                    skillLevel: this.skillLevel,
+                    totalSkillPoints: this.totalSkillPoints
+                };
+                localStorage.setItem('skillProgress', JSON.stringify(progress));
+            }
+            
+            loadProgress() {
+                const saved = localStorage.getItem('skillProgress');
+                if (saved) {
+                    try {
+                        const progress = JSON.parse(saved);
+                        this.skillLevel = progress.skillLevel || { speed: 1, accuracy: 1, armor: 1 };
+                        this.totalSkillPoints = progress.totalSkillPoints || 0;
+                    } catch (e) {
+                        console.log('Ошибка загрузки прогресса');
+                    }
+                }
+            }
+            
+            updateSkillDisplay() {
+                // Обновляем уровни навыков в меню
+                document.getElementById('skill-speed-level').textContent = this.skillLevel.speed;
+                document.getElementById('skill-accuracy-level').textContent = this.skillLevel.accuracy;
+                document.getElementById('skill-armor-level').textContent = this.skillLevel.armor;
+                
+                // Обновляем очки
+                document.getElementById('skill-points-display').textContent = this.totalSkillPoints;
+                
+                // Обновляем стоимость
+                const speedCost = this.skillLevel.speed === 1 ? 50 : (this.skillLevel.speed === 2 ? 100 : 150);
+                const accuracyCost = this.skillLevel.accuracy === 1 ? 50 : (this.skillLevel.accuracy === 2 ? 100 : 150);
+                const armorCost = this.skillLevel.armor === 1 ? 50 : (this.skillLevel.armor === 2 ? 100 : 150);
+                
+                document.getElementById('speed-cost').textContent = speedCost;
+                document.getElementById('accuracy-cost').textContent = accuracyCost;
+                document.getElementById('armor-cost').textContent = armorCost;
+                
+                // Отключаем кнопки если недостаточно очков или макс уровень
+                document.getElementById('speed-btn').disabled = this.skillLevel.speed >= 4 || this.totalSkillPoints < speedCost;
+                document.getElementById('accuracy-btn').disabled = this.skillLevel.accuracy >= 4 || this.totalSkillPoints < accuracyCost;
+                document.getElementById('armor-btn').disabled = this.skillLevel.armor >= 4 || this.totalSkillPoints < armorCost;
             }
         }
 
