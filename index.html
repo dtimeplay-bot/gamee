@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>🎮 Кариночка и Данька: Split-Screen v3.2</title>
+    <title>🎮 Кариночка и Данька - v3.4 SPLIT-SCREEN</title>
     <style>
         * {
             margin: 0;
@@ -156,20 +156,6 @@
             z-index: 10;
         }
 
-        .difficulty-badge {
-            position: absolute;
-            bottom: 70px;
-            left: 100px;
-            background: linear-gradient(135deg, #ff6b6b, #ff8a8a);
-            padding: 6px 12px;
-            border-radius: 8px;
-            color: white;
-            font-size: 11px;
-            font-weight: bold;
-            z-index: 10;
-            text-align: center;
-        }
-
         .exit-btn {
             position: absolute;
             bottom: 70px;
@@ -189,7 +175,6 @@
 
         .exit-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
         }
 
         .exit-btn:active {
@@ -405,6 +390,82 @@
             margin: 5px 0;
         }
 
+        .upgrade-section {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .skill-points-display {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .upgrade-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid #667eea;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .upgrade-name {
+            font-weight: bold;
+            color: #667eea;
+            flex: 1;
+        }
+
+        .upgrade-cost {
+            color: #ff6b6b;
+            font-weight: bold;
+            font-size: 12px;
+            margin-right: 10px;
+        }
+
+        .upgrade-level {
+            color: #764ba2;
+            font-weight: bold;
+            font-size: 12px;
+            margin-right: 10px;
+        }
+
+        .upgrade-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upgrade-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            background: #764ba2;
+        }
+
+        .upgrade-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .record-box {
             background: linear-gradient(135deg, #ffd93d, #ff6b6b);
             color: white;
@@ -527,33 +588,6 @@
             font-size: 13px;
         }
 
-        .achievement-popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, #ffd93d, #ff6b6b);
-            padding: 25px 35px;
-            border-radius: 15px;
-            color: white;
-            text-align: center;
-            z-index: 101;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            animation: achievementPop 1.5s ease-out;
-        }
-
-        @keyframes achievementPop {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-            50% { transform: translate(-50%, -50%) scale(1.1); }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
-        }
-
-        .achievement-popup strong {
-            display: block;
-            font-size: 18px;
-            margin-bottom: 5px;
-        }
-
         @media (max-width: 768px) {
             .menu-title {
                 font-size: 36px;
@@ -579,25 +613,20 @@
                 aspect-ratio: auto;
             }
 
-            body {
-                padding: 0;
-                margin: 0;
-            }
-
             .ui-top {
                 height: 55px;
-                padding: 4px;
             }
 
             .ui-bottom {
                 height: 45px;
-                padding: 4px;
-                gap: 2px;
             }
 
             .menu-title {
                 font-size: 28px;
-                margin-bottom: 3px;
+            }
+
+            .menu-version {
+                font-size: 10px;
             }
 
             .character-btn {
@@ -605,6 +634,17 @@
                 font-size: 12px;
                 width: 98%;
                 max-width: 270px;
+            }
+
+            .upgrade-item {
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+            }
+
+            .upgrade-btn {
+                width: 100%;
+                align-self: stretch;
             }
         }
     </style>
@@ -636,29 +676,25 @@
             <div class="wave-progress-fill" id="wave-progress"></div>
         </div>
 
-        <div class="season-badge" id="season-badge">🎮 v3.2 SPLIT</div>
+        <div class="season-badge" id="season-badge">🌟 v3.4</div>
 
         <button class="exit-btn" onclick="game.confirmExit()">🛑 ВЫХОД</button>
-
-        <div class="difficulty-badge" id="difficulty-badge">
-            📊 <span id="difficulty-level">НОРМАЛ</span>
-        </div>
 
         <div class="ui-bottom">
             <div class="stat-badge multiplier-badge">⚡ <span id="multiplier">1.0x</span></div>
             <div class="stat-badge combo-badge">🔥 <span id="combo">0</span></div>
             <div class="stat-badge time-badge">⏱️ <span id="game-time">0:00</span></div>
-            <div class="stat-badge challenge-badge">⭐ <span id="challenge">0</span></div>
+            <div class="stat-badge challenge-badge">⭐ <span id="kills">0</span></div>
         </div>
 
         <div id="menu">
             <div class="menu-content">
                 <h1 class="menu-title">🎮 КАРИНОЧКА И ДАНЬКА</h1>
-                <p class="menu-version">✨ ULTIMATE v3.2 - SPLIT-SCREEN ✨</p>
+                <p class="menu-version">✨ ULTIMATE v3.4 - SPLIT-SCREEN + УЛУЧШЕНИЯ ✨</p>
 
                 <div class="menu-tabs">
                     <button class="tab-btn active" onclick="switchTab('game')">🎮 ИГРА</button>
-                    <button class="tab-btn" onclick="switchTab('features')">⭐ ФИШКИ</button>
+                    <button class="tab-btn" onclick="switchTab('upgrades')">⭐ УЛУЧШЕНИЯ</button>
                     <button class="tab-btn" onclick="switchTab('records')">🏆 РЕКОРДЫ</button>
                 </div>
 
@@ -671,42 +707,71 @@
                             🧙‍♂️ ДАНЬКА СОЛО
                         </button>
                         <button class="character-btn both" onclick="game.startGame('both')">
-                            ⚡ ОБА ВМЕСТЕ (КО-ОП SPLIT-SCREEN)
+                            ⚡ ОБА ВМЕСТЕ (КО-ОП SPLIT-SCREEN!)
                         </button>
+                    </div>
+
+                    <div class="features-list">
+                        <strong>✨ v3.4 - ПОЛНАЯ ВЕРСИЯ</strong>
+                        <div>🎮 SPLIT-SCREEN ДЛЯ ДВОИХ</div>
+                        <div>📱 ВИБРАЦИЯ ПРИ УБИЙСТВЕ</div>
+                        <div>📈 ВИБРАЦИЯ ВОЗРАСТАЕТ С ВОЛНАМИ</div>
+                        <div>💎 ПОЛНАЯ СИСТЕМА УЛУЧШЕНИЙ</div>
+                        <div>🏆 ЭКРАН РАЗДЕЛЯЕТСЯ ВЕРТИКАЛЬНО</div>
+                        <div>⚡ СИНХРОННАЯ ИГРА ДЛЯ ОБОИХ</div>
                     </div>
                 </div>
 
-                <div id="tab-features" class="tab-content">
-                    <div class="features-list">
-                        <strong>🎮 РЕЖИМЫ ИГРЫ</strong>
-                        <div>🧙‍♀️ КАРИНА - одна, 3 жизни</div>
-                        <div>🧙‍♂️ ДАНЬКА - один, 3 жизни</div>
-                        <div>⚡ОБА ВМЕСТЕ - ПОЛНОЦЕННЫЙ SPLIT-SCREEN!</div>
+                <div id="tab-upgrades" class="tab-content">
+                    <div class="upgrade-section">
+                        <strong style="color: #667eea; display: block; margin-bottom: 10px;">⭐ СИСТЕМА УЛУЧШЕНИЙ</strong>
+                        
+                        <div class="skill-points-display" id="skill-points-display">
+                            🌟 Очки улучшений: 0
+                        </div>
 
-                        <strong>🆕 НОВОЕ В v3.2</strong>
-                        <div>✅ ЭКРАН РАЗДЕЛЯЕТСЯ НА 2 ПОЛОВИНЫ</div>
-                        <div>✅ РАБОТАЕТ НА ТЕЛЕФОНАХ И ПК</div>
-                        <div>✅ КАЖДЫЙ ВИДИТ СВОЮ ПОЛОВИНУ</div>
-                        <div>✅ ВИЗУАЛЬНЫЙ РАЗДЕЛИТЕЛЬ</div>
-                        <div>✅ СИНХРОННАЯ ИГРА</div>
+                        <div class="upgrade-item">
+                            <div class="upgrade-name">🏃 УСКОРЕНИЕ</div>
+                            <span class="upgrade-level">Уровень: <span id="skill-speed-level">1</span>/5</span>
+                            <span class="upgrade-cost">Стоимость: <span id="speed-cost">30</span></span>
+                            <button class="upgrade-btn" id="speed-btn" onclick="game.upgradeSkill('speed')">+</button>
+                        </div>
 
-                        <strong>🎁 ПЯТЬ СУПЕРБОНУСОВ</strong>
-                        <div>💣 БОМБА - взрыв врагов</div>
-                        <div>💎 КРИСТАЛЛ - много очков</div>
-                        <div>⚡ МОЛНИЯ - зап врагов</div>
-                        <div>🌀 ВИХРЬ - очистка</div>
-                        <div>🛡️ ЩИТ - +жизни</div>
+                        <div class="upgrade-item">
+                            <div class="upgrade-name">🎯 ТОЧНОСТЬ</div>
+                            <span class="upgrade-level">Уровень: <span id="skill-accuracy-level">1</span>/5</span>
+                            <span class="upgrade-cost">Стоимость: <span id="accuracy-cost">40</span></span>
+                            <button class="upgrade-btn" id="accuracy-btn" onclick="game.upgradeSkill('accuracy')">+</button>
+                        </div>
+
+                        <div class="upgrade-item">
+                            <div class="upgrade-name">🛡️ БРОНЯ</div>
+                            <span class="upgrade-level">Уровень: <span id="skill-armor-level">1</span>/5</span>
+                            <span class="upgrade-cost">Стоимость: <span id="armor-cost">35</span></span>
+                            <button class="upgrade-btn" id="armor-btn" onclick="game.upgradeSkill('armor')">+</button>
+                        </div>
+
+                        <div class="upgrade-item">
+                            <div class="upgrade-name">💪 СИЛА УДАРА</div>
+                            <span class="upgrade-level">Уровень: <span id="skill-power-level">1</span>/5</span>
+                            <span class="upgrade-cost">Стоимость: <span id="power-cost">45</span></span>
+                            <button class="upgrade-btn" id="power-btn" onclick="game.upgradeSkill('power')">+</button>
+                        </div>
+
+                        <div class="upgrade-item">
+                            <div class="upgrade-name">💰 МУЛЬТИПЛИКАТОР</div>
+                            <span class="upgrade-level">Уровень: <span id="skill-greed-level">1</span>/5</span>
+                            <span class="upgrade-cost">Стоимость: <span id="greed-cost">50</span></span>
+                            <button class="upgrade-btn" id="greed-btn" onclick="game.upgradeSkill('greed')">+</button>
+                        </div>
                     </div>
                 </div>
 
                 <div id="tab-records" class="tab-content">
                     <div style="background: rgba(102, 126, 234, 0.05); padding: 15px; border-radius: 10px; margin: 15px auto; max-width: 90%;">
-                        <div style="font-size: 13px; color: #667eea; font-weight: bold; margin-bottom: 15px;">📊 ЛУЧШИЙ РЕЗУЛЬТАТ</div>
-                        
                         <div class="record-box">
-                            🏆 РЕКОРД<br>
+                            🏆 ЛУЧШИЙ РЕЗУЛЬТАТ<br>
                             <span style="font-size: 24px; margin-top: 8px; display: block;" id="best-score">0</span>
-                            <span style="font-size: 11px; margin-top: 5px; display: block; opacity: 0.9;">Волна: <span id="best-wave">1</span></span>
                         </div>
 
                         <button class="character-btn both" onclick="game.clearRecords()" style="width: 90%; max-width: 250px; margin-top: 15px; border-color: #ff6b6b; color: #ff6b6b; font-size: 12px;">
@@ -723,8 +788,8 @@
                 <div class="final-stats">
                     <div class="stat-line">⏱️ Время: <span class="stat-value" id="final-time">0:00</span></div>
                     <div class="stat-line">🌊 Волна: <span class="stat-value" id="final-wave">1</span></div>
-                    <div class="stat-line">🧙‍♀️ Карина: <span class="stat-value" id="final-karina">0</span> очков</div>
-                    <div class="stat-line">🧙‍♂️ Данька: <span class="stat-value" id="final-danya">0</span> очков</div>
+                    <div class="stat-line">🧙‍♀️ Карина: <span class="stat-value" id="final-karina">0</span></div>
+                    <div class="stat-line">🧙‍♂️ Данька: <span class="stat-value" id="final-danya">0</span></div>
                 </div>
                 <div id="reward-box" class="reward-box" style="display:none;">
                     🎁 НАГРАДА: <span id="reward-text"></span>
@@ -738,15 +803,13 @@
             <div class="pause-hint">P - продолжить | ESC - меню</div>
         </div>
 
-        <div id="achievementPopup"></div>
-
         <div id="exitConfirm" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: none; z-index: 102; flex-direction: column; justify-content: center; align-items: center; gap: 20px;">
             <div style="background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 90%;">
                 <div style="font-size: 24px; font-weight: bold; color: #667eea; margin-bottom: 15px;">⚠️ ВЫЙТИ ИЗ ИГРЫ?</div>
                 <div style="font-size: 14px; color: #666; margin-bottom: 20px;">Прогресс волны будет потерян</div>
                 <div style="display: flex; gap: 10px; justify-content: center;">
-                    <button onclick="game.confirmExitYes()" style="padding: 12px 25px; background: #ff6b6b; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">🛑 ДА, ВЫЙТИ</button>
-                    <button onclick="game.confirmExitNo()" style="padding: 12px 25px; background: #667eea; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">❌ ОТМЕНА</button>
+                    <button onclick="game.confirmExitYes()" style="padding: 12px 25px; background: #ff6b6b; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">🛑 ДА</button>
+                    <button onclick="game.confirmExitNo()" style="padding: 12px 25px; background: #667eea; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">❌ НЕТ</button>
                 </div>
             </div>
         </div>
@@ -768,7 +831,7 @@
             MAX_BONUSES: 25,
             MAX_FLOATING_TEXT: 40,
             MAX_WAVES: 8,
-            SPLIT_WIDTH: 500  // Половина ширины для split-screen
+            SPLIT_WIDTH: 500  // 🎮 Половина ширины для split-screen
         };
 
         class Game {
@@ -776,7 +839,6 @@
                 this.canvas = document.getElementById('gameCanvas');
                 this.ctx = this.canvas.getContext('2d');
                 
-                // 🔧 Правильное масштабирование для мобильных
                 this.dpr = window.devicePixelRatio || 1;
                 this.resizeCanvasForDPR();
                 window.addEventListener('resize', () => this.resizeCanvasForDPR());
@@ -803,6 +865,9 @@
                 this.multiplier = 1.0;
                 this.comboResetTimer = 0;
                 
+                this.totalKills = 0;
+                this.criticalHitCount = 0;
+                
                 this.critChance = 0.15;
                 this.maxCritChance = 0.5;
                 
@@ -822,6 +887,12 @@
                 this.records = this.loadRecords();
                 this.lastVibrationTime = 0;
                 this.vibrationCooldown = 30;
+                
+                this.skillLevel = { speed: 1, accuracy: 1, armor: 1, power: 1, greed: 1 };
+                this.totalSkillPoints = 0;
+                this.skillPoints = 0;
+                
+                this.loadProgress();
             }
 
             resizeCanvasForDPR() {
@@ -924,7 +995,6 @@
 
                 this.playSound(1200, 0.05);
                 this.playSound(800, 0.05);
-                this.triggerVibration(20);
             }
 
             initAudio() {
@@ -956,7 +1026,7 @@
                 } catch (e) {}
             }
 
-            triggerVibration(duration = 50) {
+            triggerVibration(type = 'normal') {
                 if (!navigator.vibrate) return;
                 
                 const now = Date.now();
@@ -965,7 +1035,51 @@
                 }
                 
                 this.lastVibrationTime = now;
-                navigator.vibrate(duration);
+                
+                let pattern = [];
+                
+                if (type === 'kill') {
+                    pattern = [10];
+                } else if (type === 'crit') {
+                    if (this.wave >= 5) pattern = [80, 50, 80];
+                    else if (this.wave >= 3) pattern = [60, 50, 60];
+                    else pattern = [50, 50, 50];
+                } else if (type === 'bonus') {
+                    pattern = [100, 100, 100];
+                }
+                
+                navigator.vibrate(pattern);
+            }
+
+            triggerWaveVibration() {
+                if (!navigator.vibrate) return;
+                
+                let pattern = [];
+                
+                switch(this.wave) {
+                    case 1:
+                        pattern = [20];
+                        break;
+                    case 2:
+                    case 3:
+                        pattern = [30, 100, 30];
+                        break;
+                    case 4:
+                    case 5:
+                        pattern = [50, 100, 50];
+                        break;
+                    case 6:
+                    case 7:
+                        pattern = [50, 100, 50, 100, 50];
+                        break;
+                    case 8:
+                        pattern = [100, 100, 100, 100, 100];
+                        break;
+                    default:
+                        pattern = [20];
+                }
+                
+                navigator.vibrate(pattern);
             }
 
             startGame(mode) {
@@ -984,6 +1098,9 @@
                 this.combo = 0;
                 this.maxCombo = 0;
                 this.multiplier = 1.0;
+                this.totalKills = 0;
+                this.criticalHitCount = 0;
+                this.skillPoints = 0;
                 
                 document.getElementById('menu').classList.add('hidden');
                 document.getElementById('gameOver').classList.add('hidden');
@@ -997,7 +1114,7 @@
                 }
                 
                 this.playSound(400, 0.2);
-                console.log('🎮 Режим:', mode);
+                this.triggerWaveVibration();
                 this.animate();
             }
 
@@ -1044,13 +1161,43 @@
                 document.getElementById('pauseOverlay').classList.add('hidden');
                 document.getElementById('exitConfirm').style.display = 'none';
                 
+                this.saveProgress();
                 this.updateUI();
                 this.updateRecordsDisplay();
+                this.updateSkillDisplay();
                 
                 if (this.animationFrameId) {
                     cancelAnimationFrame(this.animationFrameId);
                     this.animationFrameId = null;
                 }
+            }
+
+            upgradeSkill(skillName) {
+                const costs = {
+                    speed: 30,
+                    accuracy: 40,
+                    armor: 35,
+                    power: 45,
+                    greed: 50
+                };
+                
+                const cost = costs[skillName] || 30;
+                
+                if (this.skillLevel[skillName] >= 5) {
+                    alert('⚠️ Этот навык уже максимален!');
+                    return;
+                }
+                
+                if (this.totalSkillPoints < cost) {
+                    alert(`❌ Не хватает очков! Нужно ${cost}, есть ${this.totalSkillPoints}`);
+                    return;
+                }
+                
+                this.totalSkillPoints -= cost;
+                this.skillLevel[skillName]++;
+                this.saveProgress();
+                this.updateSkillDisplay();
+                alert(`⭐ ${skillName.toUpperCase()} улучшен до уровня ${this.skillLevel[skillName]}!`);
             }
 
             update() {
@@ -1071,6 +1218,7 @@
                 if (this.waveTimer > this.waveMaxTime) {
                     this.wave++;
                     this.waveTimer = 0;
+                    this.triggerWaveVibration();
                     
                     if (this.wave > CONSTANTS.MAX_WAVES) {
                         this.gameOver();
@@ -1181,6 +1329,7 @@
 
             onEnemyHit(enemy) {
                 this.enemies.splice(this.enemies.indexOf(enemy), 1);
+                this.totalKills++;
                 
                 this.combo++;
                 if (this.combo > this.maxCombo) {
@@ -1194,7 +1343,9 @@
                 
                 const baseScore = 10;
                 const waveMultiplier = (1 + (this.wave - 1) * 0.3) * this.difficultyMultiplier;
-                const finalMultiplier = this.multiplier * critMultiplier * waveMultiplier;
+                const powerBonus = 1 + (this.skillLevel.power - 1) * 0.2;
+                const greedBonus = 1 + (this.skillLevel.greed - 1) * 0.15;
+                const finalMultiplier = this.multiplier * critMultiplier * waveMultiplier * powerBonus * greedBonus;
                 const score = Math.floor(baseScore * finalMultiplier);
                 
                 if (this.mode === 'both') {
@@ -1206,20 +1357,29 @@
                     this.score.danya += score;
                 }
                 
-                this.createExplosion(enemy.x, enemy.y, enemy.color.main);
-                this.playSound(800, 0.1);
-                this.triggerVibration(30);
+                if (isCritical) {
+                    this.criticalHitCount++;
+                    this.totalSkillPoints += 3;
+                    this.skillPoints += 3;
+                    this.createExplosion(enemy.x, enemy.y, '#ff00ff');
+                    this.triggerVibration('crit');
+                    this.playSound(1200, 0.15);
+                } else {
+                    this.totalSkillPoints += 1;
+                    this.skillPoints += 1;
+                    this.createExplosion(enemy.x, enemy.y, enemy.color.main);
+                    this.triggerVibration('kill');
+                    this.playSound(800, 0.1);
+                }
             }
 
             onBonusHit(bonus) {
                 const bonusX = bonus.x;
                 const bonusY = bonus.y;
-                const bonusType = bonus.type;
                 
                 this.bonuses.splice(this.bonuses.indexOf(bonus), 1);
-                
                 this.createBigExplosion(bonusX, bonusY);
-                this.triggerVibration(150);
+                this.triggerVibration('bonus');
                 this.combo = 0;
                 this.multiplier = 1.0;
             }
@@ -1277,7 +1437,6 @@
                 document.getElementById('final-time').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
                 
                 document.getElementById('gameOver').classList.remove('hidden');
-                
                 this.playSound(150, 0.5);
             }
 
@@ -1299,17 +1458,42 @@
                 
                 document.getElementById('multiplier').textContent = this.multiplier.toFixed(1) + 'x';
                 document.getElementById('combo').textContent = this.combo;
-                document.getElementById('difficulty-level').textContent = this.difficulty;
+                document.getElementById('kills').textContent = this.totalKills;
                 
                 const minutes = Math.floor(this.gameTime / 60);
                 const seconds = Math.floor(this.gameTime % 60);
                 document.getElementById('game-time').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
             }
 
-            // 🎮 SPLIT-SCREEN РЕЖИМ - ОСНОВНОЙ МЕТОД
+            updateSkillDisplay() {
+                document.getElementById('skill-points-display').textContent = `🌟 Очки улучшений: ${this.totalSkillPoints}`;
+                
+                const skills = ['speed', 'accuracy', 'armor', 'power', 'greed'];
+                const costs = { speed: 30, accuracy: 40, armor: 35, power: 45, greed: 50 };
+                
+                skills.forEach(skill => {
+                    const level = this.skillLevel[skill] || 1;
+                    const cost = costs[skill] || 30;
+                    
+                    document.getElementById(`skill-${skill}-level`).textContent = level;
+                    document.getElementById(`${skill}-cost`).textContent = cost;
+                    
+                    const btn = document.getElementById(`${skill}-btn`);
+                    if (level >= 5 || this.totalSkillPoints < cost) {
+                        btn.disabled = true;
+                        btn.style.opacity = '0.5';
+                    } else {
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                    }
+                });
+            }
+
+            // 🎮 SPLIT-SCREEN РЕЖИМ - основной метод отрисовки
             drawSplitScreen() {
                 // Левая половина - Карина
                 this.ctx.save();
+                this.ctx.beginPath();
                 this.ctx.rect(0, 0, CONSTANTS.SPLIT_WIDTH, CONSTANTS.CANVAS_HEIGHT);
                 this.ctx.clip();
                 
@@ -1319,6 +1503,7 @@
                 
                 // Правая половина - Данька
                 this.ctx.save();
+                this.ctx.beginPath();
                 this.ctx.rect(CONSTANTS.SPLIT_WIDTH, 0, CONSTANTS.SPLIT_WIDTH, CONSTANTS.CANVAS_HEIGHT);
                 this.ctx.clip();
                 
@@ -1328,7 +1513,7 @@
                 
                 // Вертикальный разделитель
                 this.ctx.strokeStyle = '#667eea';
-                this.ctx.lineWidth = 3;
+                this.ctx.lineWidth = 4;
                 this.ctx.beginPath();
                 this.ctx.moveTo(CONSTANTS.SPLIT_WIDTH, 0);
                 this.ctx.lineTo(CONSTANTS.SPLIT_WIDTH, CONSTANTS.CANVAS_HEIGHT);
@@ -1336,7 +1521,7 @@
                 
                 // Текст на разделителе
                 this.ctx.fillStyle = '#667eea';
-                this.ctx.font = 'bold 14px Arial';
+                this.ctx.font = 'bold 18px Arial';
                 this.ctx.textAlign = 'center';
                 this.ctx.textBaseline = 'middle';
                 this.ctx.fillText('VS', CONSTANTS.SPLIT_WIDTH, CONSTANTS.CANVAS_HEIGHT / 2);
@@ -1386,10 +1571,10 @@
 
             draw() {
                 if (this.mode === 'both') {
-                    // SPLIT-SCREEN режим
+                    // 🎮 SPLIT-SCREEN режим для двоих
                     this.drawSplitScreen();
                 } else {
-                    // Обычный режим
+                    // Обычный режим для одного игрока
                     this.ctx.fillStyle = '#f8fafb';
                     this.ctx.fillRect(0, 0, CONSTANTS.CANVAS_WIDTH, CONSTANTS.CANVAS_HEIGHT);
                     
@@ -1463,9 +1648,29 @@
                 return { bestScore: 0, bestWave: 1 };
             }
 
+            saveProgress() {
+                const progress = {
+                    skillLevel: this.skillLevel,
+                    totalSkillPoints: this.totalSkillPoints
+                };
+                localStorage.setItem('skillProgress', JSON.stringify(progress));
+            }
+
+            loadProgress() {
+                const saved = localStorage.getItem('skillProgress');
+                if (saved) {
+                    try {
+                        const progress = JSON.parse(saved);
+                        this.skillLevel = progress.skillLevel || { speed: 1, accuracy: 1, armor: 1, power: 1, greed: 1 };
+                        this.totalSkillPoints = progress.totalSkillPoints || 0;
+                    } catch (e) {
+                        console.log('Ошибка загрузки');
+                    }
+                }
+            }
+
             updateRecordsDisplay() {
                 document.getElementById('best-score').textContent = this.records.bestScore || 0;
-                document.getElementById('best-wave').textContent = this.records.bestWave || 1;
             }
 
             clearRecords() {
@@ -1485,18 +1690,17 @@
         }
 
         class Enemy {
-            constructor(x, y, speed, game, isBoss = false) {
+            constructor(x, y, speed, game) {
                 this.x = x;
                 this.y = y;
                 this.speed = speed;
                 this.game = game;
-                this.radius = isBoss ? 40 : 25;
+                this.radius = 25;
                 this.rotation = 0;
                 this.rotationSpeed = (Math.random() - 0.5) * 0.15;
                 this.glow = 0;
                 this.glowDirection = 1;
                 this.color = this.getRandomColor();
-                this.isBoss = isBoss;
             }
 
             getRandomColor() {
@@ -1582,11 +1786,11 @@
                 ctx.rotate(this.rotation);
                 
                 const colors = {
-                    bomb: { main: '#333', light: '#555', glow: '#ff6b6b' },
-                    crystal: { main: '#00d084', light: '#33e0a1', glow: '#00ff88' },
-                    lightning: { main: '#ffd93d', light: '#ffed4e', glow: '#ffff00' },
-                    vortex: { main: '#764ba2', light: '#9b6cb5', glow: '#da70d6' },
-                    shield: { main: '#00d4ff', light: '#33e4ff', glow: '#00ffff' }
+                    bomb: { main: '#333', glow: '#ff6b6b' },
+                    crystal: { main: '#00d084', glow: '#00ff88' },
+                    lightning: { main: '#ffd93d', glow: '#ffff00' },
+                    vortex: { main: '#764ba2', glow: '#da70d6' },
+                    shield: { main: '#00d4ff', glow: '#00ffff' }
                 };
                 
                 const color = colors[this.type];
@@ -1654,7 +1858,6 @@
                 ctx.globalAlpha = opacity;
                 ctx.font = 'bold 24px Arial';
                 ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
                 ctx.fillText(this.text, this.x, this.y);
                 ctx.globalAlpha = 1;
             }
@@ -1662,6 +1865,7 @@
 
         const game = new Game();
         game.updateRecordsDisplay();
+        game.updateSkillDisplay();
     </script>
 </body>
 </html>
