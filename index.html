@@ -2416,6 +2416,45 @@
                 document.getElementById('accuracy-btn').disabled = this.skillLevel.accuracy >= 4 || this.totalSkillPoints < accuracyCost;
                 document.getElementById('armor-btn').disabled = this.skillLevel.armor >= 4 || this.totalSkillPoints < armorCost;
             }
+            
+            upgradeSkill(skillType) {
+                // Определяем стоимость в зависимости от текущего уровня
+                const currentLevel = this.skillLevel[skillType];
+                let cost = 50;
+                
+                if (currentLevel === 1) cost = 50;
+                else if (currentLevel === 2) cost = 100;
+                else if (currentLevel === 3) cost = 150;
+                
+                // Проверяем: не макс уровень ли
+                if (currentLevel >= 4) {
+                    this.showAchievement('⚠️ МАКС УРОВЕНЬ!');
+                    console.log('❌ Навык уже на максимуме:', skillType);
+                    return;
+                }
+                
+                // Проверяем: хватает ли очков
+                if (this.totalSkillPoints < cost) {
+                    this.showAchievement('❌ НЕДОСТАТОЧНО ОЧКОВ!');
+                    console.log('❌ Не хватает очков. Нужно:', cost, 'Есть:', this.totalSkillPoints);
+                    return;
+                }
+                
+                // Все хорошо! Повышаем уровень
+                this.totalSkillPoints -= cost;
+                this.skillLevel[skillType]++;
+                
+                console.log('✅ Навык', skillType, 'улучшен до уровня', this.skillLevel[skillType]);
+                console.log('💰 Осталось очков:', this.totalSkillPoints);
+                
+                // Сохраняем и обновляем дисплей
+                this.saveProgress();
+                this.updateSkillDisplay();
+                
+                // Красивая анимация успеха
+                this.showAchievement('🎉 УЛУЧШЕНО ' + skillType.toUpperCase() + '!');
+                this.playSound(800, 0.2);
+            }
         }
 
         class Player {
