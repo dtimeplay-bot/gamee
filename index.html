@@ -2,13 +2,23 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>🎮 Кариночка и Данька: Кристальная Защита</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            overflow: hidden;
         }
 
         body {
@@ -17,19 +27,18 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
         }
 
         #gameContainer {
             position: relative;
-            width: 1000px;
-            height: 700px;
+            width: 100vw;
+            height: 100vh;
+            max-width: 1000px;
+            max-height: 700px;
             background: linear-gradient(180deg, #f5f7fa 0%, #e8ecf1 100%);
-            border: 5px solid #667eea;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border-radius: 0;
             overflow: hidden;
+            aspect-ratio: 10/7;
         }
 
         canvas {
@@ -41,84 +50,137 @@
 
         #ui {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            right: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            color: #333;
-            font-weight: bold;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             z-index: 10;
             pointer-events: none;
         }
 
+        .ui-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            z-index: 10;
+        }
+
         .score-panel {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.92);
+            padding: 8px 16px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
             border: 2px solid #667eea;
+            flex: 1;
+            margin: 0 5px;
+            text-align: center;
         }
 
         .score-label {
-            font-size: 12px;
+            font-size: 11px;
             color: #999;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
+            font-weight: 600;
         }
 
         .score-value {
-            font-size: 32px;
+            font-size: 20px;
             background: linear-gradient(135deg, #667eea, #764ba2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            font-weight: bold;
         }
 
         .lives-display {
-            font-size: 24px;
-            margin-top: 8px;
-            letter-spacing: 8px;
+            font-size: 16px;
+            margin-top: 4px;
+            letter-spacing: 4px;
         }
 
         .wave-panel {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.92);
+            padding: 8px 14px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
             border: 2px solid #667eea;
             text-align: center;
+            flex: 0 1 80px;
         }
 
         .wave-label {
-            font-size: 12px;
+            font-size: 10px;
             color: #999;
             text-transform: uppercase;
-            margin-bottom: 8px;
+            margin-bottom: 3px;
+            font-weight: 600;
         }
 
         .wave-number {
-            font-size: 42px;
+            font-size: 24px;
             color: #667eea;
             font-weight: bold;
         }
 
-        .wave-bar {
-            width: 250px;
-            height: 8px;
-            background: #ddd;
-            border-radius: 4px;
-            margin-top: 12px;
-            overflow: hidden;
-            border: 1px solid #667eea;
+        .ui-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 10;
         }
 
-        .wave-progress {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            transition: width 0.2s ease;
+        .multiplier-display {
+            background: rgba(255, 215, 0, 0.15);
+            border: 2px solid #ffd93d;
+            padding: 6px 12px;
+            border-radius: 8px;
+            color: #ffd93d;
+            font-weight: bold;
+            font-size: 14px;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+        }
+
+        .combo-display {
+            background: rgba(255, 107, 107, 0.15);
+            border: 2px solid #ff6b6b;
+            padding: 6px 12px;
+            border-radius: 8px;
+            color: #ff6b6b;
+            font-weight: bold;
+            font-size: 14px;
+            text-shadow: 0 0 8px rgba(255, 107, 107, 0.5);
+            animation: pulse 0.6s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .time-display {
+            background: rgba(102, 126, 234, 0.15);
+            border: 2px solid #667eea;
+            padding: 6px 12px;
+            border-radius: 8px;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 14px;
         }
 
         #menu {
@@ -133,7 +195,7 @@
             justify-content: center;
             align-items: center;
             z-index: 100;
-            backdrop-filter: blur(5px);
+            overflow-y: auto;
         }
 
         #menu.hidden {
@@ -142,10 +204,12 @@
 
         .menu-content {
             text-align: center;
+            width: 100%;
+            padding: 20px;
         }
 
         .menu-title {
-            font-size: 56px;
+            font-size: 48px;
             margin-bottom: 10px;
             background: linear-gradient(135deg, #667eea, #764ba2);
             -webkit-background-clip: text;
@@ -155,31 +219,33 @@
         }
 
         .menu-subtitle {
-            font-size: 20px;
+            font-size: 18px;
             color: #999;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
         }
 
         .character-select {
             display: flex;
-            gap: 30px;
-            justify-content: center;
-            margin-bottom: 50px;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 0 10px;
         }
 
         .character-btn {
-            padding: 25px 35px;
-            font-size: 16px;
+            padding: 20px 25px;
+            font-size: 15px;
             border: 3px solid;
             background: white;
             color: #333;
             cursor: pointer;
-            border-radius: 15px;
+            border-radius: 12px;
             transition: all 0.3s ease;
             font-weight: bold;
-            min-width: 220px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
         }
 
         .character-btn.karina {
@@ -187,11 +253,9 @@
             color: #667eea;
         }
 
-        .character-btn.karina:hover {
+        .character-btn.karina:active {
             background: #667eea;
             color: white;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
         }
 
         .character-btn.danya {
@@ -199,11 +263,9 @@
             color: #764ba2;
         }
 
-        .character-btn.danya:hover {
+        .character-btn.danya:active {
             background: #764ba2;
             color: white;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(118, 75, 162, 0.4);
         }
 
         .character-btn.both {
@@ -211,22 +273,21 @@
             color: #00d084;
         }
 
-        .character-btn.both:hover {
+        .character-btn.both:active {
             background: #00d084;
             color: white;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 208, 132, 0.4);
         }
 
         .instructions {
             color: #666;
             font-size: 13px;
-            max-width: 400px;
+            max-width: 90%;
             line-height: 1.8;
             background: rgba(102, 126, 234, 0.05);
-            padding: 20px;
+            padding: 15px;
             border-radius: 10px;
             border-left: 4px solid #667eea;
+            margin: 0 auto;
         }
 
         #gameOver {
@@ -241,7 +302,7 @@
             justify-content: center;
             align-items: center;
             z-index: 100;
-            backdrop-filter: blur(5px);
+            overflow-y: auto;
         }
 
         #gameOver.hidden {
@@ -250,52 +311,52 @@
 
         .game-over-content {
             text-align: center;
+            width: 100%;
+            padding: 20px;
         }
 
         .game-over-title {
-            font-size: 56px;
+            font-size: 42px;
             color: #667eea;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             font-weight: bold;
         }
 
         .final-stats {
-            font-size: 28px;
-            margin: 20px 0;
+            font-size: 18px;
+            margin: 20px auto;
             color: #333;
             background: rgba(102, 126, 234, 0.05);
-            padding: 30px;
-            border-radius: 15px;
+            padding: 20px;
+            border-radius: 12px;
             border: 2px solid #667eea;
+            max-width: 90%;
         }
 
         .stat-line {
-            margin: 15px 0;
+            margin: 10px 0;
             font-weight: bold;
         }
 
         .stat-value {
             color: #667eea;
-            font-size: 32px;
+            font-size: 24px;
         }
 
         .restart-btn {
-            margin-top: 40px;
-            padding: 18px 50px;
-            font-size: 18px;
+            margin-top: 20px;
+            padding: 15px 40px;
+            font-size: 16px;
             background: linear-gradient(135deg, #667eea, #764ba2);
             border: none;
             color: white;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: bold;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .restart-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+            width: 90%;
+            max-width: 300px;
         }
 
         .pause-overlay {
@@ -309,7 +370,8 @@
             justify-content: center;
             align-items: center;
             z-index: 99;
-            backdrop-filter: blur(3px);
+            flex-direction: column;
+            gap: 20px;
         }
 
         .pause-overlay.hidden {
@@ -317,28 +379,47 @@
         }
 
         .pause-text {
-            font-size: 64px;
+            font-size: 52px;
             color: white;
             font-weight: bold;
             text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
         }
 
-        @media (max-width: 768px) {
-            #gameContainer {
-                width: 95vw;
-                height: 140vw;
-                max-width: 500px;
-                max-height: 700px;
-            }
+        .pause-hint {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
 
+        .floating-text {
+            position: absolute;
+            font-weight: bold;
+            pointer-events: none;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            z-index: 5;
+        }
+
+        @media (max-width: 480px) {
             .menu-title {
-                font-size: 32px;
+                font-size: 36px;
             }
 
-            .character-btn {
-                min-width: 100%;
-                padding: 15px 20px;
-                font-size: 14px;
+            .score-value {
+                font-size: 18px;
+            }
+
+            .wave-number {
+                font-size: 20px;
+            }
+
+            .ui-bottom {
+                height: 50px;
+                padding: 8px 5px;
+                font-size: 12px;
+            }
+
+            .multiplier-display, .combo-display, .time-display {
+                font-size: 12px;
+                padding: 4px 8px;
             }
         }
     </style>
@@ -348,24 +429,29 @@
         <canvas id="gameCanvas" width="1000" height="700"></canvas>
 
         <div id="ui">
-            <div class="score-panel">
-                <div class="score-label">🧙‍♀️ Карина</div>
-                <div class="score-value" id="karina-score">0</div>
-                <div class="lives-display" id="karina-lives">❤️❤️❤️</div>
-            </div>
+            <div class="ui-top">
+                <div class="score-panel">
+                    <div class="score-label">🧙‍♀️ Карина</div>
+                    <div class="score-value" id="karina-score">0</div>
+                    <div class="lives-display" id="karina-lives">❤️❤️❤️</div>
+                </div>
 
-            <div class="wave-panel">
-                <div class="wave-label">ВОЛНА</div>
-                <div class="wave-number" id="wave">1</div>
-                <div class="wave-bar">
-                    <div class="wave-progress" id="waveProgress"></div>
+                <div class="wave-panel">
+                    <div class="wave-label">ВОЛНА</div>
+                    <div class="wave-number" id="wave">1</div>
+                </div>
+
+                <div class="score-panel">
+                    <div class="score-label">🧙‍♂️ Данька</div>
+                    <div class="score-value" id="danya-score">0</div>
+                    <div class="lives-display" id="danya-lives">❤️❤️❤️</div>
                 </div>
             </div>
 
-            <div class="score-panel">
-                <div class="score-label">🧙‍♂️ Данька</div>
-                <div class="score-value" id="danya-score">0</div>
-                <div class="lives-display" id="danya-lives">❤️❤️❤️</div>
+            <div class="ui-bottom">
+                <div class="multiplier-display">⚡ Мульт: <span id="multiplier">1.0x</span></div>
+                <div class="combo-display">🔥 Комбо: <span id="combo">0</span></div>
+                <div class="time-display">⏱️ <span id="game-time">0:00</span></div>
             </div>
         </div>
 
@@ -373,7 +459,7 @@
             <div class="menu-content">
                 <h1 class="menu-title">🎮 КАРИНОЧКА И ДАНЬКА</h1>
                 <p class="menu-subtitle">Кристальная Защита</p>
-                <p style="color: #666; margin-bottom: 30px; font-size: 15px;">Кликайте по врагам и бонусам!</p>
+                <p style="color: #666; margin-bottom: 25px; font-size: 14px;">Новая версия с супербонусами и суперэффектами!</p>
 
                 <div class="character-select">
                     <button class="character-btn karina" onclick="game.startGame('karina')">
@@ -391,9 +477,10 @@
                 </div>
 
                 <div class="instructions">
-                    <strong>🖱️ Управление:</strong><br>
-                    Кликайте по врагам и 💣 бонусам!<br><br>
-                    <strong>P</strong> - Пауза | <strong>ESC</strong> - Меню
+                    <strong>🎯 Как играть:</strong><br>
+                    Кликайте/касайтесь врагов и бонусов!<br><br>
+                    <strong>🎁 Бонусы:</strong> 💣 Бомба | 💎 Кристалл | ⚡ Молния | 🌀 Вихрь | 🛡️ Щит<br><br>
+                    <strong>Клавиши:</strong> P - Пауза | ESC - Меню
                 </div>
             </div>
         </div>
@@ -402,9 +489,11 @@
             <div class="game-over-content">
                 <h1 class="game-over-title">💀 КОНЕЦ ИГРЫ!</h1>
                 <div class="final-stats">
-                    <div class="stat-line">Волна: <span class="stat-value" id="final-wave">1</span></div>
-                    <div class="stat-line">Карина: <span class="stat-value" id="final-karina">0</span> очков</div>
-                    <div class="stat-line">Данька: <span class="stat-value" id="final-danya">0</span> очков</div>
+                    <div class="stat-line">⏱️ Время: <span class="stat-value" id="final-time">0:00</span></div>
+                    <div class="stat-line">🌊 Волна: <span class="stat-value" id="final-wave">1</span></div>
+                    <div class="stat-line">🧙‍♀️ Карина: <span class="stat-value" id="final-karina">0</span> очков</div>
+                    <div class="stat-line">🧙‍♂️ Данька: <span class="stat-value" id="final-danya">0</span> очков</div>
+                    <div class="stat-line">🔥 Max комбо: <span class="stat-value" id="final-combo">0</span></div>
                 </div>
                 <button class="restart-btn" onclick="game.returnToMenu()">↩️ В МЕНЮ</button>
             </div>
@@ -412,20 +501,20 @@
 
         <div id="pauseOverlay" class="pause-overlay hidden">
             <div class="pause-text">⏸️ ПАУЗА</div>
+            <div class="pause-hint">Нажмите P чтобы продолжить</div>
         </div>
     </div>
 
     <script>
-        // ==================== КОНСТАНТЫ ====================
         const CONSTANTS = {
             CANVAS_WIDTH: 1000,
             CANVAS_HEIGHT: 700,
-            MAX_ENEMIES: 80,
-            MAX_PARTICLES: 300,
-            MAX_BONUSES: 20,
+            MAX_ENEMIES: 100,
+            MAX_PARTICLES: 500,
+            MAX_BONUSES: 30,
+            MAX_FLOATING_TEXT: 50,
         };
 
-        // ==================== GAME CLASS ====================
         class Game {
             constructor() {
                 this.canvas = document.getElementById('gameCanvas');
@@ -437,7 +526,7 @@
                 this.enemies = [];
                 this.bonuses = [];
                 this.particles = [];
-                this.projectiles = [];
+                this.floatingTexts = [];
                 
                 this.score = { karina: 0, danya: 0 };
                 this.lives = { karina: 3, danya: 3 };
@@ -446,6 +535,10 @@
                 this.spawnTimer = 0;
                 this.bonusSpawnTimer = 0;
                 this.gameTime = 0;
+                this.combo = 0;
+                this.maxCombo = 0;
+                this.multiplier = 1.0;
+                this.comboResetTimer = 0;
                 
                 this.mouse = { x: 0, y: 0 };
                 this.setupInput();
@@ -470,8 +563,8 @@
 
                 this.canvas.addEventListener('mousemove', (e) => {
                     const rect = this.canvas.getBoundingClientRect();
-                    this.mouse.x = e.clientX - rect.left;
-                    this.mouse.y = e.clientY - rect.top;
+                    this.mouse.x = (e.clientX - rect.left) * (this.canvas.width / rect.width);
+                    this.mouse.y = (e.clientY - rect.top) * (this.canvas.height / rect.height);
                 });
 
                 this.canvas.addEventListener('click', (e) => {
@@ -481,29 +574,36 @@
                 });
 
                 this.canvas.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
                     const rect = this.canvas.getBoundingClientRect();
                     const touch = e.touches[0];
-                    const x = touch.clientX - rect.left;
-                    const y = touch.clientY - rect.top;
+                    const x = (touch.clientX - rect.left) * (this.canvas.width / rect.width);
+                    const y = (touch.clientY - rect.top) * (this.canvas.height / rect.height);
                     
                     if (this.gameState === 'playing') {
                         this.handleTouchClick(x, y);
                     }
-                });
+                }, { passive: false });
+
+                this.canvas.addEventListener('touchmove', (e) => {
+                    e.preventDefault();
+                    const rect = this.canvas.getBoundingClientRect();
+                    const touch = e.touches[0];
+                    this.mouse.x = (touch.clientX - rect.left) * (this.canvas.width / rect.width);
+                    this.mouse.y = (touch.clientY - rect.top) * (this.canvas.height / rect.height);
+                }, { passive: false });
             }
 
             handleClick(e) {
                 const rect = this.canvas.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
+                const x = (e.clientX - rect.left) * (this.canvas.width / rect.width);
+                const y = (e.clientY - rect.top) * (this.canvas.height / rect.height);
                 this.handleTouchClick(x, y);
             }
 
             handleTouchClick(x, y) {
-                // Создаём визуальный эффект выстрела
                 this.createShootEffect(x, y);
 
-                // Проверяем попадание по бонусам первыми (они приоритетнее)
                 for (let i = this.bonuses.length - 1; i >= 0; i--) {
                     const bonus = this.bonuses[i];
                     const dx = x - bonus.x;
@@ -512,11 +612,10 @@
                     
                     if (distance < bonus.radius + 20) {
                         this.onBonusHit(bonus);
-                        return; // Выходим после попадания в бонус
+                        return;
                     }
                 }
 
-                // Проверяем попадание по врагам
                 for (let i = this.enemies.length - 1; i >= 0; i--) {
                     const enemy = this.enemies[i];
                     const dx = x - enemy.x;
@@ -531,30 +630,15 @@
             }
 
             createShootEffect(x, y) {
-                // Волна от выстрела
-                this.createShootWave(x, y);
-                
-                // Звук выстрела
-                this.playSound(1200, 0.05);
-                this.playSound(800, 0.05);
-            }
-
-            createShootWave(x, y) {
-                // Создаём расширяющийся круг в месте клика
                 for (let i = 0; i < 12; i++) {
                     const angle = (Math.PI * 2 * i) / 12;
                     const vx = Math.cos(angle) * 6;
                     const vy = Math.sin(angle) * 6;
                     
-                    const particle = new Particle(
-                        x, y, vx, vy,
-                        '#667eea',
-                        0.4
-                    );
+                    const particle = new Particle(x, y, vx, vy, '#667eea', 0.4);
                     this.particles.push(particle);
                 }
 
-                // Яркий центр выстрела
                 for (let i = 0; i < 6; i++) {
                     const angle = Math.random() * Math.PI * 2;
                     const velocity = 3 + Math.random() * 3;
@@ -567,6 +651,9 @@
                     );
                     this.particles.push(particle);
                 }
+
+                this.playSound(1200, 0.05);
+                this.playSound(800, 0.05);
             }
 
             initAudio() {
@@ -577,7 +664,7 @@
                 }
             }
 
-            playSound(frequency, duration, type = 'sine', volume = 0.3) {
+            playSound(frequency, duration, type = 'sine', volume = 0.2) {
                 if (!this.audioContext) return;
                 try {
                     const now = this.audioContext.currentTime;
@@ -607,12 +694,15 @@
                 this.enemies = [];
                 this.bonuses = [];
                 this.particles = [];
-                this.projectiles = [];
+                this.floatingTexts = [];
                 this.score = { karina: 0, danya: 0 };
                 this.lives = { karina: 3, danya: 3 };
                 this.wave = 1;
                 this.waveTimer = 0;
                 this.gameTime = 0;
+                this.combo = 0;
+                this.maxCombo = 0;
+                this.multiplier = 1.0;
                 
                 document.getElementById('menu').classList.add('hidden');
                 document.getElementById('gameOver').classList.add('hidden');
@@ -650,7 +740,7 @@
                 this.enemies = [];
                 this.bonuses = [];
                 this.particles = [];
-                this.projectiles = [];
+                this.floatingTexts = [];
                 
                 document.getElementById('menu').classList.remove('hidden');
                 document.getElementById('gameOver').classList.add('hidden');
@@ -668,14 +758,18 @@
                 
                 this.gameTime += this.deltaTime / 1000;
                 this.waveTimer += this.deltaTime / 1000;
+                this.comboResetTimer -= this.deltaTime;
                 
-                // Волны прогрессирует каждые 30 секунд
+                if (this.comboResetTimer < 0) {
+                    this.combo = 0;
+                    this.multiplier = 1.0;
+                }
+                
                 if (this.waveTimer > 30) {
                     this.wave++;
                     this.waveTimer = 0;
                 }
                 
-                // Спаун врагов
                 const waveConfig = this.getWaveConfig();
                 this.spawnTimer += this.deltaTime;
                 const spawnInterval = 1000 / waveConfig.spawnRate;
@@ -685,24 +779,23 @@
                     this.spawnTimer = 0;
                 }
 
-                // Спаун бонусов
                 this.bonusSpawnTimer += this.deltaTime;
-                if (this.bonusSpawnTimer > 3000 && this.bonuses.length < CONSTANTS.MAX_BONUSES) {
+                if (this.bonusSpawnTimer > 2000 && this.bonuses.length < CONSTANTS.MAX_BONUSES) {
                     this.spawnBonus();
                     this.bonusSpawnTimer = 0;
                 }
                 
-                // Обновляем врагов
                 for (let i = this.enemies.length - 1; i >= 0; i--) {
                     const enemy = this.enemies[i];
                     enemy.update();
                     
-                    // Упал враг
                     if (enemy.y > CONSTANTS.CANVAS_HEIGHT) {
                         this.enemies.splice(i, 1);
                         
                         const randomPlayer = this.players[Math.floor(Math.random() * this.players.length)];
                         this.lives[randomPlayer.type]--;
+                        this.combo = 0;
+                        this.multiplier = 1.0;
                         
                         this.playSound(200, 0.3);
                         
@@ -712,7 +805,6 @@
                     }
                 }
 
-                // Обновляем бонусы
                 for (let i = this.bonuses.length - 1; i >= 0; i--) {
                     const bonus = this.bonuses[i];
                     bonus.update();
@@ -722,7 +814,6 @@
                     }
                 }
                 
-                // Обновляем частицы
                 for (let i = this.particles.length - 1; i >= 0; i--) {
                     const particle = this.particles[i];
                     particle.update();
@@ -730,16 +821,24 @@
                         this.particles.splice(i, 1);
                     }
                 }
+
+                for (let i = this.floatingTexts.length - 1; i >= 0; i--) {
+                    const text = this.floatingTexts[i];
+                    text.update();
+                    if (text.life <= 0) {
+                        this.floatingTexts.splice(i, 1);
+                    }
+                }
                 
                 this.updateUI();
             }
 
             getWaveConfig() {
-                const baseSpawnRate = 2 + (this.wave - 1) * 0.5;
-                const baseSpeed = 2 + (this.wave - 1) * 0.3;
+                const baseSpawnRate = 2 + (this.wave - 1) * 0.6;
+                const baseSpeed = 2 + (this.wave - 1) * 0.4;
                 return {
-                    spawnRate: Math.min(baseSpawnRate, 10),
-                    speed: Math.min(baseSpeed, 6),
+                    spawnRate: Math.min(baseSpawnRate, 12),
+                    speed: Math.min(baseSpeed, 7),
                 };
             }
 
@@ -751,15 +850,24 @@
 
             spawnBonus() {
                 const x = Math.random() * (CONSTANTS.CANVAS_WIDTH - 80) + 40;
-                const bonus = new Bonus(x, -30, 1.5, this);
+                const bonusTypes = ['bomb', 'crystal', 'lightning', 'vortex', 'shield'];
+                const type = bonusTypes[Math.floor(Math.random() * bonusTypes.length)];
+                const bonus = new Bonus(x, -30, 1.2, type, this);
                 this.bonuses.push(bonus);
             }
 
             onEnemyHit(enemy) {
                 this.enemies.splice(this.enemies.indexOf(enemy), 1);
                 
+                this.combo++;
+                if (this.combo > this.maxCombo) {
+                    this.maxCombo = this.combo;
+                }
+                this.comboResetTimer = 5000;
+                this.multiplier = 1.0 + (this.combo * 0.15);
+                
                 const baseScore = 10;
-                const multiplier = 1 + (this.wave - 1) * 0.1;
+                const multiplier = (1 + (this.wave - 1) * 0.1) * this.multiplier;
                 const score = Math.floor(baseScore * multiplier);
                 
                 if (this.mode === 'both') {
@@ -771,28 +879,45 @@
                     this.score.danya += score;
                 }
                 
-                this.playSound(800, 0.15);
+                this.playSound(800, 0.1);
                 this.createExplosion(enemy.x, enemy.y, enemy.color.main);
+                this.createFloatingText(enemy.x, enemy.y, `+${score}`, '#667eea');
             }
 
             onBonusHit(bonus) {
                 this.bonuses.splice(this.bonuses.indexOf(bonus), 1);
                 
-                // Огромный взрыв!
-                this.createBigExplosion(bonus.x, bonus.y);
+                const bonusType = bonus.type;
                 
-                // Убиваем всех врагов в радиусе
+                if (bonusType === 'bomb') {
+                    this.handleBombBonus();
+                } else if (bonusType === 'crystal') {
+                    this.handleCrystalBonus();
+                } else if (bonusType === 'lightning') {
+                    this.handleLightningBonus();
+                } else if (bonusType === 'vortex') {
+                    this.handleVortexBonus();
+                } else if (bonusType === 'shield') {
+                    this.handleShieldBonus();
+                }
+                
+                this.createBigExplosion(bonus.x, bonus.y);
+                this.combo = 0;
+                this.multiplier = 1.0;
+            }
+
+            handleBombBonus() {
                 const explosionRadius = 200;
+                let killed = 0;
+                
                 for (let i = this.enemies.length - 1; i >= 0; i--) {
                     const enemy = this.enemies[i];
-                    const dx = bonus.x - enemy.x;
-                    const dy = bonus.y - enemy.y;
+                    const dx = this.bonuses[0]?.x || 500 - enemy.x;
+                    const dy = this.bonuses[0]?.y || 350 - enemy.y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
                     
-                    if (distance < explosionRadius) {
-                        const baseScore = 10;
-                        const multiplier = 1 + (this.wave - 1) * 0.1;
-                        const score = Math.floor(baseScore * multiplier * 2); // Двойные очки за бонус
+                    if (distance < explosionRadius || i < 10) {
+                        const score = Math.floor(20 * (1 + (this.wave - 1) * 0.1));
                         
                         if (this.mode === 'both') {
                             const player = this.players[Math.floor(Math.random() * this.players.length)];
@@ -804,13 +929,90 @@
                         }
                         
                         this.enemies.splice(i, 1);
-                        this.createExplosion(enemy.x, enemy.y, '#ff00ff');
+                        killed++;
                     }
                 }
                 
-                // Громкий звук
+                this.createFloatingText(500, 350, `💣 x${killed}!`, '#ff6b6b');
                 this.playSound(400, 0.2);
+            }
+
+            handleCrystalBonus() {
+                let killCount = Math.min(this.enemies.length, 3);
+                
+                for (let i = 0; i < killCount && this.enemies.length > 0; i++) {
+                    const idx = Math.floor(Math.random() * this.enemies.length);
+                    const enemy = this.enemies[idx];
+                    const score = Math.floor(50 * (1 + (this.wave - 1) * 0.1));
+                    
+                    if (this.mode === 'both') {
+                        const player = this.players[Math.floor(Math.random() * this.players.length)];
+                        this.score[player.type] += score;
+                    } else if (this.mode === 'karina') {
+                        this.score.karina += score;
+                    } else {
+                        this.score.danya += score;
+                    }
+                    
+                    this.createExplosion(enemy.x, enemy.y, '#00d084');
+                    this.enemies.splice(idx, 1);
+                }
+                
+                this.createFloatingText(500, 350, `💎 +Очки!`, '#00d084');
                 this.playSound(600, 0.15);
+            }
+
+            handleLightningBonus() {
+                for (let i = 0; i < Math.min(5, this.enemies.length); i++) {
+                    const enemy = this.enemies[Math.floor(Math.random() * this.enemies.length)];
+                    const score = Math.floor(30 * (1 + (this.wave - 1) * 0.1));
+                    
+                    if (this.mode === 'both') {
+                        const player = this.players[Math.floor(Math.random() * this.players.length)];
+                        this.score[player.type] += score;
+                    } else if (this.mode === 'karina') {
+                        this.score.karina += score;
+                    } else {
+                        this.score.danya += score;
+                    }
+                    
+                    this.createExplosion(enemy.x, enemy.y, '#ffd93d');
+                }
+                
+                this.enemies = this.enemies.slice(Math.max(0, this.enemies.length - 5));
+                this.createFloatingText(500, 350, `⚡ МОЛНИЯ!`, '#ffd93d');
+                this.playSound(800, 0.2);
+            }
+
+            handleVortexBonus() {
+                const bonusScore = Math.floor(100 * (1 + (this.wave - 1) * 0.1));
+                
+                if (this.mode === 'both') {
+                    this.score.karina += bonusScore / 2;
+                    this.score.danya += bonusScore / 2;
+                } else if (this.mode === 'karina') {
+                    this.score.karina += bonusScore;
+                } else {
+                    this.score.danya += bonusScore;
+                }
+                
+                this.enemies = [];
+                this.createFloatingText(500, 350, `🌀 ВСЕ!`, '#764ba2');
+                this.playSound(400, 0.3);
+            }
+
+            handleShieldBonus() {
+                if (this.mode === 'both') {
+                    this.lives.karina = Math.min(3, this.lives.karina + 1);
+                    this.lives.danya = Math.min(3, this.lives.danya + 1);
+                } else if (this.mode === 'karina') {
+                    this.lives.karina = Math.min(3, this.lives.karina + 2);
+                } else {
+                    this.lives.danya = Math.min(3, this.lives.danya + 2);
+                }
+                
+                this.createFloatingText(500, 350, `🛡️ +Жизни!`, '#00ff88');
+                this.playSound(600, 0.2);
             }
 
             createExplosion(x, y, color) {
@@ -829,10 +1031,9 @@
             }
 
             createBigExplosion(x, y) {
-                // Много частиц разных цветов
                 const colors = ['#ff6b6b', '#ffd93d', '#ff00ff', '#00ff88', '#00d4ff'];
                 
-                for (let i = 0; i < 40; i++) {
+                for (let i = 0; i < 50; i++) {
                     const angle = Math.random() * Math.PI * 2;
                     const velocity = 5 + Math.random() * 8;
                     const color = colors[Math.floor(Math.random() * colors.length)];
@@ -847,9 +1048,8 @@
                     this.particles.push(particle);
                 }
 
-                // Ударная волна
-                for (let i = 0; i < 20; i++) {
-                    const angle = (Math.PI * 2 * i) / 20;
+                for (let i = 0; i < 25; i++) {
+                    const angle = (Math.PI * 2 * i) / 25;
                     const particle = new Particle(
                         x, y,
                         Math.cos(angle) * 8,
@@ -861,11 +1061,22 @@
                 }
             }
 
+            createFloatingText(x, y, text, color) {
+                const floatingText = new FloatingText(x, y, text, color);
+                this.floatingTexts.push(floatingText);
+            }
+
             gameOver() {
                 this.gameState = 'gameover';
                 document.getElementById('final-wave').textContent = this.wave;
                 document.getElementById('final-karina').textContent = this.score.karina;
                 document.getElementById('final-danya').textContent = this.score.danya;
+                document.getElementById('final-combo').textContent = this.maxCombo;
+                
+                const minutes = Math.floor(this.gameTime / 60);
+                const seconds = Math.floor(this.gameTime % 60);
+                document.getElementById('final-time').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
                 document.getElementById('gameOver').classList.remove('hidden');
                 
                 this.playSound(150, 0.5);
@@ -884,16 +1095,18 @@
                 document.getElementById('karina-lives').textContent = livesKarina;
                 document.getElementById('danya-lives').textContent = livesDanya;
                 
-                const waveProgress = (this.waveTimer / 30) * 100;
-                document.getElementById('waveProgress').style.width = waveProgress + '%';
+                document.getElementById('multiplier').textContent = this.multiplier.toFixed(1) + 'x';
+                document.getElementById('combo').textContent = this.combo;
+                
+                const minutes = Math.floor(this.gameTime / 60);
+                const seconds = Math.floor(this.gameTime % 60);
+                document.getElementById('game-time').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
             }
 
             draw() {
-                // Очистка
                 this.ctx.fillStyle = '#f8fafb';
                 this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
                 
-                // Сетка фона
                 this.ctx.strokeStyle = 'rgba(102, 126, 234, 0.05)';
                 this.ctx.lineWidth = 1;
                 for (let i = 0; i < this.canvas.width; i += 50) {
@@ -909,27 +1122,27 @@
                     this.ctx.stroke();
                 }
                 
-                // Враги
                 for (let enemy of this.enemies) {
                     enemy.draw(this.ctx);
                 }
 
-                // Бонусы
                 for (let bonus of this.bonuses) {
                     bonus.draw(this.ctx);
                 }
                 
-                // Частицы
                 for (let particle of this.particles) {
                     particle.draw(this.ctx);
                 }
+
+                for (let text of this.floatingTexts) {
+                    text.draw(this.ctx);
+                }
                 
-                // Целевой круг под мышью
                 if (this.gameState === 'playing') {
-                    this.ctx.strokeStyle = 'rgba(102, 126, 234, 0.3)';
+                    this.ctx.strokeStyle = 'rgba(102, 126, 234, 0.2)';
                     this.ctx.lineWidth = 2;
                     this.ctx.beginPath();
-                    this.ctx.arc(this.mouse.x, this.mouse.y, 30, 0, Math.PI * 2);
+                    this.ctx.arc(this.mouse.x, this.mouse.y, 25, 0, Math.PI * 2);
                     this.ctx.stroke();
                 }
             }
@@ -948,7 +1161,6 @@
             }
         }
 
-        // ==================== PLAYER CLASS ====================
         class Player {
             constructor(type, game) {
                 this.type = type;
@@ -956,7 +1168,6 @@
             }
         }
 
-        // ==================== ENEMY CLASS ====================
         class Enemy {
             constructor(x, y, speed, game) {
                 this.x = x;
@@ -1031,16 +1242,16 @@
             }
         }
 
-        // ==================== BONUS CLASS ====================
         class Bonus {
-            constructor(x, y, speed, game) {
+            constructor(x, y, speed, type, game) {
                 this.x = x;
                 this.y = y;
                 this.speed = speed;
+                this.type = type;
                 this.game = game;
-                this.radius = 20;
+                this.radius = 18;
                 this.rotation = 0;
-                this.rotationSpeed = 0.1;
+                this.rotationSpeed = 0.12;
                 this.glow = 0;
                 this.glowDirection = 1;
             }
@@ -1049,7 +1260,7 @@
                 this.y += this.speed;
                 this.rotation += this.rotationSpeed;
                 
-                this.glow += this.glowDirection * 0.08;
+                this.glow += this.glowDirection * 0.1;
                 if (this.glow > 1 || this.glow < 0) {
                     this.glowDirection *= -1;
                 }
@@ -1060,35 +1271,33 @@
                 ctx.translate(this.x, this.y);
                 ctx.rotate(this.rotation);
                 
-                // Бомба 💣
-                ctx.fillStyle = '#333';
+                const colors = {
+                    bomb: { main: '#333', light: '#555', glow: '#ff6b6b' },
+                    crystal: { main: '#00d084', light: '#33e0a1', glow: '#00ff88' },
+                    lightning: { main: '#ffd93d', light: '#ffed4e', glow: '#ffff00' },
+                    vortex: { main: '#764ba2', light: '#9b6cb5', glow: '#da70d6' },
+                    shield: { main: '#00d4ff', light: '#33e4ff', glow: '#00ffff' }
+                };
+                
+                const color = colors[this.type];
+                
+                ctx.fillStyle = color.main;
                 ctx.globalAlpha = 0.8 + this.glow * 0.2;
                 ctx.beginPath();
                 ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
                 ctx.fill();
                 
-                // Фитиль
-                ctx.strokeStyle = '#ff6b6b';
-                ctx.lineWidth = 3;
-                ctx.globalAlpha = 1;
-                ctx.beginPath();
-                ctx.moveTo(0, -this.radius);
-                ctx.quadraticCurveTo(5, -this.radius - 10, 0, -this.radius - 15);
-                ctx.stroke();
-                
-                // Сияние
                 ctx.globalAlpha = 0.5;
-                ctx.strokeStyle = '#ffd93d';
+                ctx.strokeStyle = color.glow;
                 ctx.lineWidth = 2;
                 ctx.beginPath();
-                ctx.arc(0, 0, this.radius + 15, 0, Math.PI * 2);
+                ctx.arc(0, 0, this.radius + 12, 0, Math.PI * 2);
                 ctx.stroke();
 
-                // Яркий центр
-                ctx.globalAlpha = 0.3 + this.glow * 0.3;
-                ctx.fillStyle = '#ffd93d';
+                ctx.globalAlpha = 0.4 + this.glow * 0.4;
+                ctx.fillStyle = color.light;
                 ctx.beginPath();
-                ctx.arc(0, 0, this.radius * 0.3, 0, Math.PI * 2);
+                ctx.arc(0, 0, this.radius * 0.4, 0, Math.PI * 2);
                 ctx.fill();
                 
                 ctx.globalAlpha = 1;
@@ -1096,7 +1305,6 @@
             }
         }
 
-        // ==================== PARTICLE CLASS ====================
         class Particle {
             constructor(x, y, vx, vy, color, life) {
                 this.x = x;
@@ -1127,7 +1335,38 @@
             }
         }
 
-        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+        class FloatingText {
+            constructor(x, y, text, color) {
+                this.x = x;
+                this.y = y;
+                this.text = text;
+                this.color = color;
+                this.life = 1.0;
+                this.maxLife = 1.0;
+                this.vy = -2;
+            }
+
+            update() {
+                this.y += this.vy;
+                this.life -= 0.016;
+            }
+
+            draw(ctx) {
+                const opacity = this.life / this.maxLife;
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = opacity;
+                ctx.font = 'bold 24px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+                ctx.shadowBlur = 4;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 2;
+                ctx.fillText(this.text, this.x, this.y);
+                ctx.globalAlpha = 1;
+            }
+        }
+
         const game = new Game();
     </script>
 </body>
