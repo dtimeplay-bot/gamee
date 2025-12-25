@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>🎮 Кариночка и Данька: Кристальная Защита - ULTIMATE</title>
+    <title>🎮 Кариночка и Данька: Кристальная Защита - ULTIMATE v3.0</title>
     <style>
         * {
             margin: 0;
@@ -120,9 +120,29 @@
             font-weight: bold;
         }
 
+        .wave-progress-bar {
+            position: absolute;
+            top: 75px;
+            left: 8px;
+            right: 8px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            overflow: hidden;
+            z-index: 10;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .wave-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
         .season-badge {
             position: absolute;
-            top: 80px;
+            top: 88px;
             left: 8px;
             background: linear-gradient(135deg, #ffd93d, #ff6b6b);
             padding: 4px 10px;
@@ -136,7 +156,7 @@
 
         .battle-pass-panel {
             position: absolute;
-            top: 80px;
+            top: 88px;
             right: 8px;
             background: rgba(255, 255, 255, 0.92);
             padding: 6px 10px;
@@ -147,6 +167,32 @@
             color: #00d084;
             z-index: 10;
             text-align: center;
+        }
+
+        .exit-btn {
+            position: absolute;
+            bottom: 70px;
+            right: 8px;
+            background: linear-gradient(135deg, #ff6b6b, #ff8a8a);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+            transition: all 0.3s;
+        }
+
+        .exit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
+        }
+
+        .exit-btn:active {
+            transform: scale(0.95);
         }
 
         .boss-indicator {
@@ -385,6 +431,18 @@
             margin: 5px 0;
         }
 
+        .record-box {
+            background: linear-gradient(135deg, #ffd93d, #ff6b6b);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px auto;
+            max-width: 90%;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
         #gameOver {
             position: absolute;
             top: 0;
@@ -548,7 +606,7 @@
         .difficulty-badge {
             position: absolute;
             bottom: 70px;
-            right: 8px;
+            left: 100px;
             background: linear-gradient(135deg, #ff6b6b, #ff8a8a);
             padding: 6px 12px;
             border-radius: 8px;
@@ -610,122 +668,28 @@
             50% { transform: translate(-50%, -50%) scale(1.15); }
         }
 
-        .skill-tree-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            max-width: 90%;
-            margin: 15px auto;
-        }
-
-        .skill-item {
+        .daily-quest-box {
             background: rgba(102, 126, 234, 0.1);
             border: 2px solid #667eea;
             border-radius: 8px;
-            padding: 10px;
-            text-align: center;
-            font-size: 12px;
-            color: #333;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .skill-item.unlocked {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border-color: #764ba2;
-        }
-
-        .skill-item:hover:not(.locked) {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .skill-item.locked {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .skill-upgrade-section {
-            background: rgba(102, 126, 234, 0.05);
-            padding: 15px;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
-            margin: 15px auto;
+            padding: 12px;
+            margin: 10px auto;
             max-width: 90%;
-            font-size: 12px;
+            font-size: 11px;
+            text-align: left;
             color: #333;
         }
 
-        .upgrade-item {
+        .quest-item {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
         }
 
-        .upgrade-item:last-child {
+        .quest-item:last-child {
             border-bottom: none;
-        }
-
-        .upgrade-name {
-            text-align: left;
-            font-weight: bold;
-        }
-
-        .upgrade-btn {
-            padding: 6px 12px;
-            border: 2px solid #667eea;
-            background: white;
-            color: #667eea;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .upgrade-btn:hover:not(:disabled) {
-            background: #667eea;
-            color: white;
-        }
-
-        .upgrade-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .leaderboard-table {
-            background: rgba(102, 126, 234, 0.05);
-            border: 2px solid #667eea;
-            border-radius: 8px;
-            padding: 10px;
-            margin: 15px auto;
-            max-width: 90%;
-            font-size: 12px;
-            color: #333;
-        }
-
-        .leaderboard-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 6px 0;
-            border-bottom: 1px solid rgba(102, 126, 234, 0.2);
-        }
-
-        .leaderboard-row:last-child {
-            border-bottom: none;
-        }
-
-        .leaderboard-rank {
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .leaderboard-score {
-            color: #764ba2;
-            font-weight: bold;
         }
 
         @media (max-width: 768px) {
@@ -766,18 +730,29 @@
                 font-size: 18px;
             }
 
+            .wave-progress-bar {
+                top: 70px;
+            }
+
             .season-badge {
-                top: 75px;
+                top: 83px;
                 left: 6px;
                 padding: 3px 8px;
                 font-size: 10px;
             }
 
             .battle-pass-panel {
-                top: 75px;
+                top: 83px;
                 right: 6px;
                 padding: 4px 8px;
                 font-size: 10px;
+            }
+
+            .exit-btn {
+                bottom: 65px;
+                right: 6px;
+                padding: 6px 10px;
+                font-size: 11px;
             }
 
             .power-up-panel {
@@ -790,7 +765,7 @@
 
             .difficulty-badge {
                 bottom: 65px;
-                right: 6px;
+                left: 90px;
                 padding: 4px 10px;
                 font-size: 10px;
             }
@@ -811,20 +786,6 @@
                 font-size: 36px;
             }
 
-            .menu-version {
-                font-size: 11px;
-            }
-
-            .menu-tabs {
-                gap: 8px;
-                margin-bottom: 15px;
-            }
-
-            .tab-btn {
-                padding: 6px 14px;
-                font-size: 11px;
-            }
-
             .character-btn {
                 padding: 14px 18px;
                 font-size: 13px;
@@ -839,14 +800,6 @@
                 margin-bottom: 15px;
             }
 
-            .features-list strong {
-                margin-top: 8px;
-            }
-
-            .features-list div {
-                margin: 4px 0;
-            }
-
             .game-over-title {
                 font-size: 32px;
                 margin-bottom: 12px;
@@ -856,26 +809,6 @@
                 font-size: 12px;
                 padding: 12px;
                 margin: 12px auto;
-            }
-
-            .stat-line {
-                margin: 6px 0;
-            }
-
-            .stat-value {
-                font-size: 16px;
-            }
-
-            .restart-btn {
-                padding: 10px 30px;
-                font-size: 14px;
-                width: 95%;
-            }
-
-            .reward-box {
-                padding: 10px;
-                font-size: 12px;
-                margin: 8px 0;
             }
 
             .combo-indicator {
@@ -906,6 +839,7 @@
         }
 
         @media (max-width: 480px) {
+            #gameContainer {
                 max-width: 100%;
                 max-height: 100%;
                 aspect-ratio: auto;
@@ -958,8 +892,13 @@
                 font-size: 16px;
             }
 
+            .wave-progress-bar {
+                top: 68px;
+                height: 5px;
+            }
+
             .season-badge {
-                top: 70px;
+                top: 78px;
                 left: 4px;
                 padding: 2px 6px;
                 font-size: 9px;
@@ -967,11 +906,18 @@
             }
 
             .battle-pass-panel {
-                top: 70px;
+                top: 78px;
                 right: 4px;
                 padding: 2px 6px;
                 font-size: 9px;
                 border-radius: 6px;
+            }
+
+            .exit-btn {
+                bottom: 60px;
+                right: 4px;
+                padding: 6px 10px;
+                font-size: 10px;
             }
 
             .power-up-panel {
@@ -985,7 +931,7 @@
 
             .difficulty-badge {
                 bottom: 60px;
-                right: 4px;
+                left: 80px;
                 padding: 3px 8px;
                 font-size: 9px;
                 border-radius: 6px;
@@ -1049,15 +995,6 @@
                 margin-bottom: 12px;
                 border-left: 3px solid #667eea;
                 border-radius: 6px;
-            }
-
-            .features-list strong {
-                margin-top: 7px;
-                font-size: 11px;
-            }
-
-            .features-list div {
-                margin: 3px 0;
             }
 
             .game-over-content {
@@ -1185,6 +1122,12 @@
                 font-size: 8px;
             }
 
+            .exit-btn {
+                padding: 5px 8px;
+                font-size: 9px;
+                bottom: 57px;
+            }
+
             .power-up-panel {
                 bottom: 55px;
                 left: 3px;
@@ -1195,7 +1138,7 @@
 
             .difficulty-badge {
                 bottom: 55px;
-                right: 3px;
+                left: 75px;
                 padding: 2px 6px;
                 font-size: 8px;
             }
@@ -1230,15 +1173,6 @@
                 font-size: 11px;
                 width: 100%;
                 max-width: 260px;
-            }
-
-            .features-list {
-                padding: 8px;
-                font-size: 9px;
-            }
-
-            .features-list strong {
-                font-size: 10px;
             }
 
             .game-over-title {
@@ -1300,18 +1234,24 @@
             </div>
         </div>
 
-        <div class="season-badge" id="season-badge">🌟 СЕЗОН 1</div>
+        <div class="wave-progress-bar">
+            <div class="wave-progress-fill" id="wave-progress"></div>
+        </div>
+
+        <div class="season-badge" id="season-badge">🌟 v3.0</div>
         
         <div class="battle-pass-panel" id="battle-pass-panel">
             📊 БП: <span id="bp-level">0</span>/5
         </div>
+
+        <button class="exit-btn" onclick="game.confirmExit()">🛑 ВЫХОД</button>
 
         <div class="power-up-panel" id="power-up-panel">
             💪 <span id="active-skill">-</span>
         </div>
 
         <div class="difficulty-badge" id="difficulty-badge">
-            📊 СЛОЖНОСТЬ: <span id="difficulty-level">НОРМАЛ</span>
+            📊 <span id="difficulty-level">НОРМАЛ</span>
         </div>
 
         <div id="combo-display"></div>
@@ -1331,24 +1271,24 @@
         <div id="menu">
             <div class="menu-content">
                 <h1 class="menu-title">🎮 КАРИНОЧКА И ДАНЬКА</h1>
-                <p class="menu-version">✨ ULTIMATE v2.0 - ГАЙД ✨</p>
+                <p class="menu-version">✨ ULTIMATE v3.0 - НОВАЯ ЭПОХА ✨</p>
 
                 <div class="menu-tabs">
                     <button class="tab-btn active" onclick="switchTab('game')">🎮 ИГРА</button>
                     <button class="tab-btn" onclick="switchTab('features')">⭐ ФИШКИ</button>
-                    <button class="tab-btn" onclick="switchTab('meta')">📈 МЕТА</button>
+                    <button class="tab-btn" onclick="switchTab('records')">🏆 РЕКОРДЫ</button>
                 </div>
 
                 <div id="tab-game" class="tab-content active">
                     <div class="character-select">
                         <button class="character-btn karina" onclick="game.startGame('karina')">
-                            🧙‍♀️ КАРИНА
+                            🧙‍♀️ КАРИНА СОЛО
                         </button>
                         <button class="character-btn danya" onclick="game.startGame('danya')">
-                            🧙‍♂️ ДАНЬКА
+                            🧙‍♂️ ДАНЬКА СОЛО
                         </button>
                         <button class="character-btn both" onclick="game.startGame('both')">
-                            ⚡ ОБА ВМЕСТЕ
+                            ⚡ ОБА ВМЕСТЕ (КО-ОП)
                         </button>
                     </div>
                 </div>
@@ -1356,11 +1296,17 @@
                 <div id="tab-features" class="tab-content">
                     <div class="features-list">
                         <strong>🎮 РЕЖИМЫ ИГРЫ</strong>
-                        <div>🧙‍♀️ КАРИНА - играет одна, 3 жизни</div>
-                        <div>🧙‍♂️ ДАНЬКА - играет один, 3 жизни</div>
-                        <div>⚡ ОБА ВМЕСТЕ - КО-ОП режим!</div>
-                        <div>При "ОБА" враги распределяются</div>
-                        <div>Очки считаются раздельно</div>
+                        <div>🧙‍♀️ КАРИНА - одна, 3 жизни</div>
+                        <div>🧙‍♂️ ДАНЬКА - один, 3 жизни</div>
+                        <div>⚡ОБА ВМЕСТЕ - КО-ОП режим!</div>
+
+                        <strong>🆕 НОВОЕ В v3.0</strong>
+                        <div>📊 ВОЛНОВОЙ ПРОГРЕСС-БАР</div>
+                        <div>🛑 КНОПКА ВЫХОДА для мобил</div>
+                        <div>📱 ВИБРАЦИЯ при убийстве</div>
+                        <div>🏆 СИСТЕМА РЕКОРДОВ</div>
+                        <div>💎 АРТЕФАКТЫ/РЕЛИКИ</div>
+                        <div>📋 СУТОЧНЫЕ КВЕСТЫ</div>
 
                         <strong>🎁 ПЯТЬ СУПЕРБОНУСОВ</strong>
                         <div>💣 БОМБА - взрыв врагов</div>
@@ -1370,92 +1316,98 @@
                         <div>🛡️ ЩИТ - +жизни</div>
 
                         <strong>🔥 КРИТИЧЕСКИЙ УДАР</strong>
-                        <div>15% шанс КРИТ! (+200% урона)</div>
+                        <div>15% шанс КРИТ! (+250% урона)</div>
                         <div>Вероятность растёт с комбо</div>
                         <div>Макс 50% при комбо 10+</div>
 
-                        <strong>⚡ СИЛА ВОЛНЫ</strong>
-                        <div>Враги слабеют каждые 3 волны</div>
-                        <div>Каждая 5-я волна - БОСС ВОЛНЫ</div>
-                        <div>БОССЫ сложнее но дают +500 очков</div>
+                        <strong>⚡ ВОЛНЫ (МАКС 8)</strong>
+                        <div>Враги слабеют каждые 2 волны</div>
+                        <div>Волна 8 - ФИНАЛЬНАЯ БИТВА!</div>
+                    </div>
 
-                        <strong>💪 УМЕНИЯ (SKILLS)</strong>
-                        <div>🏃 УСКОРЕНИЕ - быстрее убивай</div>
-                        <div>🎯 ТОЧНОСТЬ - больше критов</div>
-                        <div>🛡️ БРОНЯ - меньше урона</div>
-                    </div>                        <div class="skill-upgrade-section">
-                        <strong style="display: block; margin-bottom: 10px; color: #667eea;">⭐ УЛУЧШЕНИЯ УМЕНИЙ</strong>
+                    <div class="skill-upgrade-section">
+                        <strong style="display: block; margin-bottom: 10px; color: #667eea;">⭐ СИСТЕМА УЛУЧШЕНИЙ</strong>
                         <div style="background: rgba(255, 217, 61, 0.1); padding: 10px; border-radius: 6px; margin-bottom: 10px; border-left: 3px solid #ffd93d;">
-                            <div style="font-size: 11px; color: #ff6b6b; font-weight: bold;">💡 КАК ПОЛУЧИТЬ ОЧКИ УМЕНИЙ (во время игры):</div>
-                            <div style="font-size: 10px; color: #666; margin-top: 5px;">💥 КРИТ УДАР (жёлто-красная вспышка) = <span style="color: #ff6b6b; font-weight: bold;">+2 очка</span></div>
+                            <div style="font-size: 11px; color: #ff6b6b; font-weight: bold;">💡 КАК РАБОТАЕТ:</div>
+                            <div style="font-size: 10px; color: #666; margin-top: 5px;">💥 КРИТ УДАР = <span style="color: #ff6b6b; font-weight: bold;">+3 очка улучшений</span></div>
                             <div style="font-size: 10px; color: #666;">⚔️ ОБЫЧНЫЙ УДАР = <span style="color: #667eea; font-weight: bold;">+1 очко</span></div>
-                            <div style="font-size: 10px; color: #00d084; font-weight: bold; margin-top: 8px;">📊 ВИДИТЕ ОЧКИ: глядите на ЗВЁЗДОЧКУ ⭐ в правом нижнем углу!</div>
-                            
-                            <div style="font-size: 10px; color: #667eea; font-weight: bold; margin-top: 10px;">СТОИМОСТЬ УЛУЧШЕНИЯ:</div>
-                            <div style="font-size: 10px; color: #667eea;">Уровень 1→2: 50 очков</div>
-                            <div style="font-size: 10px; color: #667eea;">Уровень 2→3: 100 очков</div>
-                            <div style="font-size: 10px; color: #667eea;">Уровень 3→4: 150 очков</div>
-                            
-                            <div style="font-size: 10px; color: #00d084; font-weight: bold; margin-top: 10px;">💾 ОЧКИ СОХРАНЯЮТСЯ между играми!</div>
-                            <div style="font-size: 10px; color: #666; margin-top: 5px;">Вы можете постепенно улучшать навыки</div>
+                            <div style="font-size: 10px; color: #666;">🎁 СУПЕРБОНУС = <span style="color: #00d084; font-weight: bold;">+5 очков</span></div>
+                            <div style="font-size: 10px; color: #00d084; font-weight: bold; margin-top: 8px;">📊 СМОТРИ ЗВЁЗДОЧКУ ⭐ справа внизу!</div>
                         </div>
+
                         <div style="background: rgba(102, 126, 234, 0.15); padding: 10px; border-radius: 6px; margin-bottom: 15px; text-align: center; border: 2px solid #667eea;">
-                            <div style="font-size: 14px; font-weight: bold; color: #667eea;">⭐ ВАШИ ОЧКИ НАВЫКОВ</div>
+                            <div style="font-size: 14px; font-weight: bold; color: #667eea;">⭐ ОЧКИ УЛУЧШЕНИЙ</div>
                             <div style="font-size: 22px; color: #ff6b6b; font-weight: bold; margin-top: 5px;" id="skill-points-display">0</div>
                             <div style="font-size: 10px; color: #667eea; margin-top: 5px;">Всего собрано за все игры</div>
                         </div>
-                        
+
                         <div class="upgrade-item">
                             <div class="upgrade-name">🏃 УСКОРЕНИЕ</div>
                             <div style="font-size: 10px;">
                                 <div>Уровень: <span id="skill-speed-level" style="color: #667eea; font-weight: bold;">1</span>/4</div>
-                                <div style="color: #ff6b6b; margin-top: 3px;">Стоимость: <span id="speed-cost" style="font-weight: bold;">50</span> очков</div>
+                                <div style="color: #ff6b6b; margin-top: 3px;">Стоимость: <span id="speed-cost" style="font-weight: bold;">30</span> очков</div>
                             </div>
                             <button class="upgrade-btn" id="speed-btn" onclick="game.upgradeSkill('speed')">+</button>
                         </div>
+
                         <div class="upgrade-item">
-                            <div class="upgrade-name">🎯 ТОЧНОСТЬ</div>
+                            <div class="upgrade-name">🎯 КРИТСТАНС</div>
                             <div style="font-size: 10px;">
                                 <div>Уровень: <span id="skill-accuracy-level" style="color: #667eea; font-weight: bold;">1</span>/4</div>
-                                <div style="color: #ff6b6b; margin-top: 3px;">Стоимость: <span id="accuracy-cost" style="font-weight: bold;">50</span> очков</div>
+                                <div style="color: #ff6b6b; margin-top: 3px;">Стоимость: <span id="accuracy-cost" style="font-weight: bold;">40</span> очков</div>
                             </div>
                             <button class="upgrade-btn" id="accuracy-btn" onclick="game.upgradeSkill('accuracy')">+</button>
                         </div>
+
                         <div class="upgrade-item">
                             <div class="upgrade-name">🛡️ БРОНЯ</div>
                             <div style="font-size: 10px;">
                                 <div>Уровень: <span id="skill-armor-level" style="color: #667eea; font-weight: bold;">1</span>/4</div>
-                                <div style="color: #ff6b6b; margin-top: 3px;">Стоимость: <span id="armor-cost" style="font-weight: bold;">50</span> очков</div>
+                                <div style="color: #ff6b6b; margin-top: 3px;">Стоимость: <span id="armor-cost" style="font-weight: bold;">35</span> очков</div>
                             </div>
                             <button class="upgrade-btn" id="armor-btn" onclick="game.upgradeSkill('armor')">+</button>
+                        </div>
+
+                        <div class="upgrade-item">
+                            <div class="upgrade-name">💪 СИЛА УДАРА</div>
+                            <div style="font-size: 10px;">
+                                <div>Уровень: <span id="skill-power-level" style="color: #667eea; font-weight: bold;">1</span>/4</div>
+                                <div style="color: #ff6b6b; margin-top: 3px;">Стоимость: <span id="power-cost" style="font-weight: bold;">45</span> очков</div>
+                            </div>
+                            <button class="upgrade-btn" id="power-btn" onclick="game.upgradeSkill('power')">+</button>
+                        </div>
+
+                        <div class="upgrade-item">
+                            <div class="upgrade-name">💰 МУЛЬТИПЛИКАТОР</div>
+                            <div style="font-size: 10px;">
+                                <div>Уровень: <span id="skill-greed-level" style="color: #667eea; font-weight: bold;">1</span>/4</div>
+                                <div style="color: #ff6b6b; margin-top: 3px;">Стоимость: <span id="greed-cost" style="font-weight: bold;">50</span> очков</div>
+                            </div>
+                            <button class="upgrade-btn" id="greed-btn" onclick="game.upgradeSkill('greed')">+</button>
                         </div>
                     </div>
                 </div>
 
-                <div id="tab-meta" class="tab-content">
-                    <div class="features-list">
-                        <strong>🎮 НОВЫЕ МЕХАНИКИ</strong>
-                        <div>• Система УМЕНИЙ (3 вида)</div>
-                        <div>• КРИТЫ 15-50% урона</div>
-                        <div>• Масштабируемая сложность</div>
-                        <div>• ПЕРЕСТАР система улучшений</div>
+                <div id="tab-records" class="tab-content">
+                    <div style="background: rgba(102, 126, 234, 0.05); padding: 15px; border-radius: 10px; margin: 15px auto; max-width: 90%;">
+                        <div style="font-size: 13px; color: #667eea; font-weight: bold; margin-bottom: 15px;">📊 СТАТИСТИКА РЕКОРДОВ</div>
+                        
+                        <div class="record-box">
+                            🏆 ЛУЧШИЙ РЕЗУЛЬТАТ<br>
+                            <span style="font-size: 24px; margin-top: 8px; display: block;" id="best-score">0</span>
+                            <span style="font-size: 11px; margin-top: 5px; display: block; opacity: 0.9;">Волна: <span id="best-wave">1</span></span>
+                        </div>
 
-                        <strong>🌊 ВОЛНЫ & БОССЫ</strong>
-                        <div>• Волна 5, 10, 15... - BOSSES</div>
-                        <div>• Враги ослабляют каждые 3 волны</div>
-                        <div>• Макс 20 волн в одной игре</div>
-                        <div>• Сложность растёт плавно</div>
+                        <div style="background: rgba(255, 217, 61, 0.1); border: 2px solid #ffd93d; border-radius: 8px; padding: 12px; margin: 10px 0; font-size: 12px; color: #333;">
+                            <div style="font-weight: bold; color: #ffd93d; margin-bottom: 8px;">📈 ДОСТИЖЕНИЯ:</div>
+                            <div>🎯 Макс комбо: <span id="best-combo" style="color: #ff6b6b; font-weight: bold;">0</span></div>
+                            <div style="margin-top: 5px;">⚔️ Критов сделано: <span id="crit-count" style="color: #ff6b6b; font-weight: bold;">0</span></div>
+                            <div style="margin-top: 5px;">🎮 Игр сыграно: <span id="games-played" style="color: #667eea; font-weight: bold;">0</span></div>
+                        </div>
 
-                        <strong>📊 СИСТЕМА БАЛАНСА</strong>
-                        <div>• Враги не слишком сложные</div>
-                        <div>• Боссы справедливы (не глючат)</div>
-                        <div>• Дифф показывает реальную сложность</div>
-                        <div>• Награды за риск и мастерство</div>
-
-                        <strong>🏆 РЕКОМЕНДУЕТСЯ</strong>
-                        <div>Собирай комбо для крытов</div>
-                        <div>Используй умения в нужный момент</div>
-                        <div>Доходи до волны 15+ за реварды</div>
+                        <button class="character-btn both" onclick="game.clearRecords()" style="width: 90%; max-width: 250px; margin-top: 15px; border-color: #ff6b6b; color: #ff6b6b; font-size: 12px;">
+                            🗑️ ОЧИСТИТЬ РЕКОРДЫ
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1470,7 +1422,7 @@
                     <div class="stat-line">🧙‍♀️ Карина: <span class="stat-value" id="final-karina">0</span> очков</div>
                     <div class="stat-line">🧙‍♂️ Данька: <span class="stat-value" id="final-danya">0</span> очков</div>
                     <div class="stat-line">🔥 Max комбо: <span class="stat-value" id="final-combo">0</span></div>
-                    <div class="stat-line">📊 БП уровень: <span class="stat-value" id="final-bp">0</span></div>
+                    <div class="stat-line">💥 Критов: <span class="stat-value" id="final-crits">0</span></div>
                 </div>
                 <div id="reward-box" class="reward-box" style="display:none;">
                     🎁 НАГРАДА: <span id="reward-text"></span>
@@ -1485,6 +1437,17 @@
         </div>
 
         <div id="achievementPopup"></div>
+
+        <div id="exitConfirm" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: none; z-index: 102; flex-direction: column; justify-content: center; align-items: center; gap: 20px;">
+            <div style="background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 90%;">
+                <div style="font-size: 24px; font-weight: bold; color: #667eea; margin-bottom: 15px;">⚠️ ВЫЙТИ ИЗ ИГРЫ?</div>
+                <div style="font-size: 14px; color: #666; margin-bottom: 20px;">Прогресс волны будет потерян</div>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button onclick="game.confirmExitYes()" style="padding: 12px 25px; background: #ff6b6b; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">🛑 ДА, ВЫЙТИ</button>
+                    <button onclick="game.confirmExitNo()" style="padding: 12px 25px; background: #667eea; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">❌ ОТМЕНА</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -1498,10 +1461,11 @@
         const CONSTANTS = {
             CANVAS_WIDTH: 1000,
             CANVAS_HEIGHT: 700,
-            MAX_ENEMIES: 120,
-            MAX_PARTICLES: 600,
-            MAX_BONUSES: 35,
-            MAX_FLOATING_TEXT: 50,
+            MAX_ENEMIES: 100,
+            MAX_PARTICLES: 500,
+            MAX_BONUSES: 25,
+            MAX_FLOATING_TEXT: 40,
+            MAX_WAVES: 8
         };
 
         class Game {
@@ -1521,6 +1485,7 @@
                 this.lives = { karina: 3, danya: 3 };
                 this.wave = 1;
                 this.waveTimer = 0;
+                this.waveMaxTime = 25;
                 this.spawnTimer = 0;
                 this.bonusSpawnTimer = 0;
                 this.gameTime = 0;
@@ -1535,14 +1500,14 @@
                 this.skillPoints = 0;
                 this.totalSkillPoints = 0;
                 
-                // Загружаем сохранённые очки и уровни
-                this.loadProgress();
-                this.bossWaveInterval = 5;
+                this.records = this.loadRecords();
+                this.criticalHitCount = 0;
+                
+                this.bossWaveInterval = 4;
                 this.isBossWave = false;
                 
                 this.critChance = 0.15;
                 this.maxCritChance = 0.5;
-                this.critialHitCount = 0;
                 
                 this.difficulty = 'НОРМАЛ';
                 this.difficultyMultiplier = 1.0;
@@ -1551,12 +1516,7 @@
                 this.skillDuration = 0;
                 this.skillTimers = { speed: 0, accuracy: 0, armor: 0 };
                 this.skillCooldowns = { speed: 0, accuracy: 0, armor: 0 };
-                this.skillLevel = { speed: 1, accuracy: 1, armor: 1 };
-                this.skillPoints = 0;
-                this.totalSkillPoints = 0;
-                
-                this.comboDisplay = null;
-                this.comboDuration = 0;
+                this.skillLevel = { speed: 1, accuracy: 1, armor: 1, power: 1, greed: 1 };
                 
                 this.mouse = { x: 0, y: 0 };
                 this.setupInput();
@@ -1567,6 +1527,9 @@
                 this.animationFrameId = null;
                 this.lastFrameTime = Date.now();
                 this.deltaTime = 0;
+                this.vibrationCooldown = 0;
+                
+                this.loadProgress();
             }
 
             setupInput() {
@@ -1672,6 +1635,7 @@
 
                 this.playSound(1200, 0.05);
                 this.playSound(800, 0.05);
+                this.triggerVibration(20);
             }
 
             initAudio() {
@@ -1703,6 +1667,13 @@
                 } catch (e) {}
             }
 
+            triggerVibration(duration = 50) {
+                if (navigator.vibrate && this.vibrationCooldown <= 0) {
+                    navigator.vibrate(duration);
+                    this.vibrationCooldown = 30;
+                }
+            }
+
             startGame(mode) {
                 this.mode = mode;
                 this.gameState = 'playing';
@@ -1722,7 +1693,8 @@
                 this.battlePassLevel = 0;
                 this.battlePassProgress = 0;
                 this.challengeProgress = 0;
-                this.skillPoints = 0;  // Обнуляем очки в игре для новой игры
+                this.skillPoints = 0;
+                this.criticalHitCount = 0;
                 
                 document.getElementById('menu').classList.add('hidden');
                 document.getElementById('gameOver').classList.add('hidden');
@@ -1755,6 +1727,21 @@
                 }
             }
 
+            confirmExit() {
+                if (this.gameState === 'playing') {
+                    document.getElementById('exitConfirm').style.display = 'flex';
+                }
+            }
+
+            confirmExitYes() {
+                document.getElementById('exitConfirm').style.display = 'none';
+                this.returnToMenu();
+            }
+
+            confirmExitNo() {
+                document.getElementById('exitConfirm').style.display = 'none';
+            }
+
             returnToMenu() {
                 this.gameState = 'menu';
                 this.players = [];
@@ -1763,19 +1750,20 @@
                 this.particles = [];
                 this.floatingTexts = [];
                 
-                // Сохраняем прогресс перед возвратом
-                this.saveProgress();
+                if (this.animationFrameId) {
+                    cancelAnimationFrame(this.animationFrameId);
+                    this.animationFrameId = null;
+                }
                 
                 document.getElementById('menu').classList.remove('hidden');
                 document.getElementById('gameOver').classList.add('hidden');
                 document.getElementById('pauseOverlay').classList.add('hidden');
+                document.getElementById('exitConfirm').style.display = 'none';
                 
                 this.updateUI();
+                this.updateRecordsDisplay();
                 this.updateSkillDisplay();
-                
-                if (this.animationFrameId) {
-                    cancelAnimationFrame(this.animationFrameId);
-                }
+                this.saveProgress();
             }
 
             update() {
@@ -1784,7 +1772,7 @@
                 this.gameTime += this.deltaTime / 1000;
                 this.waveTimer += this.deltaTime / 1000;
                 this.comboResetTimer -= this.deltaTime;
-                this.comboDuration -= this.deltaTime;
+                this.vibrationCooldown -= this.deltaTime;
                 
                 this.skillTimers.speed -= this.deltaTime;
                 this.skillTimers.accuracy -= this.deltaTime;
@@ -1802,7 +1790,7 @@
                 this.updateDifficulty();
                 this.updateDifficultyMultiplier();
                 
-                if (this.waveTimer > 30) {
+                if (this.waveTimer > this.waveMaxTime) {
                     this.wave++;
                     this.waveTimer = 0;
                     this.battlePassProgress += 1;
@@ -1812,19 +1800,18 @@
                         this.showAchievement('🏆 УРОВЕНЬ БОЕВОГО ПРОПУСКА!');
                     }
                     
-                    if (this.wave >= 20) {
+                    if (this.wave > CONSTANTS.MAX_WAVES) {
                         this.gameOver();
                     }
                 }
-                
-                this.isBossWave = (this.wave % this.bossWaveInterval === 0) && this.wave > 0;
                 
                 const waveConfig = this.getWaveConfig();
                 this.spawnTimer += this.deltaTime;
                 const spawnInterval = 1000 / waveConfig.spawnRate;
                 
                 if (this.spawnTimer > spawnInterval && this.enemies.length < CONSTANTS.MAX_ENEMIES) {
-                    if (this.isBossWave && Math.random() < 0.1) {
+                    this.isBossWave = (this.wave === CONSTANTS.MAX_WAVES);
+                    if (this.isBossWave && Math.random() < 0.15) {
                         this.spawnBossEnemy(waveConfig.speed);
                     } else {
                         this.spawnEnemy(waveConfig.speed);
@@ -1833,7 +1820,7 @@
                 }
 
                 this.bonusSpawnTimer += this.deltaTime;
-                if (this.bonusSpawnTimer > 1800 && this.bonuses.length < CONSTANTS.MAX_BONUSES) {
+                if (this.bonusSpawnTimer > 1500 && this.bonuses.length < CONSTANTS.MAX_BONUSES) {
                     this.spawnBonus();
                     this.bonusSpawnTimer = 0;
                 }
@@ -1887,59 +1874,33 @@
             }
 
             getWaveConfig() {
-                const baseSpawnRate = 2 + (this.wave - 1) * 0.5;
-                const baseSpeed = 2 + (this.wave - 1) * 0.3;
+                const baseSpawnRate = 1.5 + (this.wave - 1) * 0.8;
+                const baseSpeed = 2 + (this.wave - 1) * 0.6;
                 return {
-                    spawnRate: Math.min(baseSpawnRate, 12),
+                    spawnRate: Math.min(baseSpawnRate, 10),
                     speed: Math.min(baseSpeed, 6.5),
                 };
             }
 
             updateDifficulty() {
-                if (this.wave <= 3) this.difficulty = 'ЛЕГКО';
-                else if (this.wave <= 7) this.difficulty = 'НОРМАЛ';
-                else if (this.wave <= 12) this.difficulty = 'СЛОЖНО';
-                else if (this.wave <= 16) this.difficulty = 'АДСКИЙ';
-                else this.difficulty = '😈';
+                if (this.wave === 1) this.difficulty = 'ЛЕГКО';
+                else if (this.wave <= 3) this.difficulty = 'НОРМАЛ';
+                else if (this.wave <= 5) this.difficulty = 'СЛОЖНО';
+                else if (this.wave <= 7) this.difficulty = 'АДСКИЙ';
+                else this.difficulty = '😈 ФИНАЛ';
             }
 
             updateDifficultyMultiplier() {
-                if (this.wave <= 3) this.difficultyMultiplier = 0.8;
-                else if (this.wave <= 7) this.difficultyMultiplier = 1.0;
-                else if (this.wave <= 12) this.difficultyMultiplier = 1.3;
-                else if (this.wave <= 16) this.difficultyMultiplier = 1.6;
-                else this.difficultyMultiplier = 2.0;
+                if (this.wave === 1) this.difficultyMultiplier = 0.6;
+                else if (this.wave <= 3) this.difficultyMultiplier = 1.0;
+                else if (this.wave <= 5) this.difficultyMultiplier = 1.4;
+                else if (this.wave <= 7) this.difficultyMultiplier = 1.8;
+                else this.difficultyMultiplier = 2.5;
             }
 
             updateCritChance() {
-                this.critChance = 0.15 + (this.combo * 0.03);
-                if (this.skillTimers.accuracy > 0) {
-                    this.critChance += 0.15 * this.skillLevel.accuracy;
-                }
+                this.critChance = 0.15 + (this.combo * 0.05);
                 this.critChance = Math.min(this.critChance, this.maxCritChance);
-            }
-
-            useSkill(skillType) {
-                if (this.skillCooldowns[skillType] > 0) return;
-                
-                if (skillType === 'speed') {
-                    this.skillTimers.speed = 8000;
-                    this.skillCooldowns.speed = 20000;
-                    this.activeSkill = '🏃 УСКОРЕНИЕ!';
-                    this.showAchievement('🏃 УСКОРЕНИЕ! x' + this.skillLevel.speed);
-                } else if (skillType === 'accuracy') {
-                    this.skillTimers.accuracy = 8000;
-                    this.skillCooldowns.accuracy = 20000;
-                    this.activeSkill = '🎯 ТОЧНОСТЬ!';
-                    this.showAchievement('🎯 ТОЧНОСТЬ! +' + (15 * this.skillLevel.accuracy) + '%');
-                } else if (skillType === 'armor') {
-                    this.skillTimers.armor = 8000;
-                    this.skillCooldowns.armor = 20000;
-                    this.activeSkill = '🛡️ БРОНЯ!';
-                    this.showAchievement('🛡️ БРОНЯ! -' + (20 * this.skillLevel.armor) + '%');
-                }
-                
-                this.playSound(800, 0.15);
             }
 
             spawnEnemy(speed) {
@@ -1956,7 +1917,7 @@
 
             spawnBossEnemy(speed) {
                 const x = Math.random() * (CONSTANTS.CANVAS_WIDTH - 80) + 40;
-                let scaledSpeed = speed * 1.2;
+                let scaledSpeed = speed * 1.3;
                 
                 if (this.skillTimers.speed > 0) {
                     scaledSpeed *= (1 - 0.2 * this.skillLevel.speed);
@@ -1972,7 +1933,7 @@
                 const x = Math.random() * (CONSTANTS.CANVAS_WIDTH - 80) + 40;
                 const bonusTypes = ['bomb', 'crystal', 'lightning', 'vortex', 'shield'];
                 const type = bonusTypes[Math.floor(Math.random() * bonusTypes.length)];
-                const bonus = new Bonus(x, -30, 1.2, type, this);
+                const bonus = new Bonus(x, -30, 1.0, type, this);
                 this.bonuses.push(bonus);
             }
 
@@ -1980,20 +1941,20 @@
                 this.enemies.splice(this.enemies.indexOf(enemy), 1);
                 
                 this.combo++;
-                this.challengeProgress++;
                 if (this.combo > this.maxCombo) {
                     this.maxCombo = this.combo;
                 }
-                this.comboResetTimer = 5000;
-                this.multiplier = 1.0 + (this.combo * 0.15);
-                this.comboDuration = 1000;
+                this.comboResetTimer = 4000;
+                this.multiplier = 1.0 + (this.combo * 0.2);
                 
                 let isCritical = Math.random() < this.critChance;
                 let critMultiplier = isCritical ? 2.5 : 1.0;
                 
-                const baseScore = enemy.isBoss ? 150 : 10;
-                const waveMultiplier = (1 + (this.wave - 1) * 0.15) * this.difficultyMultiplier;
-                const finalMultiplier = this.multiplier * critMultiplier * waveMultiplier;
+                const baseScore = enemy.isBoss ? 200 : 10;
+                const waveMultiplier = (1 + (this.wave - 1) * 0.3) * this.difficultyMultiplier;
+                let greedBonus = 1 + (this.skillLevel.greed - 1) * 0.15;
+                let powerBonus = 1 + (this.skillLevel.power - 1) * 0.2;
+                const finalMultiplier = this.multiplier * critMultiplier * waveMultiplier * greedBonus * powerBonus;
                 const score = Math.floor(baseScore * finalMultiplier);
                 
                 if (this.mode === 'both') {
@@ -2006,19 +1967,21 @@
                 }
                 
                 if (isCritical) {
-                    this.critialHitCount++;
-                    this.skillPoints += 2;
-                    this.totalSkillPoints += 2;
+                    this.criticalHitCount++;
+                    this.totalSkillPoints += 3;
+                    this.skillPoints += 3;
                     this.createFloatingText(enemy.x, enemy.y, `💥 КРИТ!`, '#ff00ff');
                     this.createExplosion(enemy.x, enemy.y, '#ff00ff');
-                    this.playSound(1200, 0.12);
+                    this.playSound(1200, 0.15);
+                    this.triggerVibration(80);
                 } else {
-                    this.skillPoints += 1;
                     this.totalSkillPoints += 1;
+                    this.skillPoints += 1;
                     this.createExplosion(enemy.x, enemy.y, enemy.color.main);
+                    this.playSound(800, 0.1);
+                    this.triggerVibration(30);
                 }
                 
-                this.playSound(800, 0.1);
                 this.createFloatingText(enemy.x, enemy.y, `+${score}`, '#667eea');
             }
 
@@ -2026,21 +1989,21 @@
                 this.bonuses.splice(this.bonuses.indexOf(bonus), 1);
                 
                 const bonusType = bonus.type;
-                let bonusScore = 0;
                 
                 if (bonusType === 'bomb') {
-                    bonusScore = this.handleBombBonus();
+                    this.handleBombBonus();
                 } else if (bonusType === 'crystal') {
-                    bonusScore = this.handleCrystalBonus();
+                    this.handleCrystalBonus();
                 } else if (bonusType === 'lightning') {
-                    bonusScore = this.handleLightningBonus();
+                    this.handleLightningBonus();
                 } else if (bonusType === 'vortex') {
-                    bonusScore = this.handleVortexBonus();
+                    this.handleVortexBonus();
                 } else if (bonusType === 'shield') {
                     this.handleShieldBonus();
                 }
                 
                 this.createBigExplosion(bonus.x, bonus.y);
+                this.triggerVibration(150);
                 this.combo = 0;
                 this.multiplier = 1.0;
             }
@@ -2049,13 +2012,15 @@
                 let score = 0;
                 let killed = 0;
                 const explosionRadius = 200;
+                const bonusX = 500;
+                const bonusY = 350;
                 
                 for (let i = this.enemies.length - 1; i >= 0; i--) {
                     const enemy = this.enemies[i];
-                    const dist = Math.hypot(bonus?.x - enemy.x || 500 - enemy.x, bonus?.y - enemy.y || 350 - enemy.y);
+                    const dist = Math.hypot(bonusX - enemy.x, bonusY - enemy.y);
                     
                     if (dist < explosionRadius) {
-                        const s = Math.floor(20 * (1 + (this.wave - 1) * 0.1));
+                        const s = Math.floor(20 * (1 + (this.wave - 1) * 0.2));
                         
                         if (this.mode === 'both') {
                             const player = this.players[Math.floor(Math.random() * this.players.length)];
@@ -2074,7 +2039,6 @@
                 
                 this.createFloatingText(500, 350, `💣 x${killed}!`, '#ff6b6b');
                 this.playSound(400, 0.2);
-                return score;
             }
 
             handleCrystalBonus() {
@@ -2084,7 +2048,7 @@
                 for (let i = 0; i < killCount && this.enemies.length > 0; i++) {
                     const idx = Math.floor(Math.random() * this.enemies.length);
                     const enemy = this.enemies[idx];
-                    const s = Math.floor(50 * (1 + (this.wave - 1) * 0.1));
+                    const s = Math.floor(50 * (1 + (this.wave - 1) * 0.2));
                     
                     if (this.mode === 'both') {
                         const player = this.players[Math.floor(Math.random() * this.players.length)];
@@ -2102,7 +2066,6 @@
                 
                 this.createFloatingText(500, 350, `💎 +Очки!`, '#00d084');
                 this.playSound(600, 0.15);
-                return score;
             }
 
             handleLightningBonus() {
@@ -2112,7 +2075,7 @@
                 for (let i = 0; i < killCount; i++) {
                     const idx = Math.floor(Math.random() * this.enemies.length);
                     const enemy = this.enemies[idx];
-                    const s = Math.floor(30 * (1 + (this.wave - 1) * 0.1));
+                    const s = Math.floor(30 * (1 + (this.wave - 1) * 0.2));
                     
                     if (this.mode === 'both') {
                         const player = this.players[Math.floor(Math.random() * this.players.length)];
@@ -2130,12 +2093,11 @@
                 
                 this.createFloatingText(500, 350, `⚡ МОЛНИЯ!`, '#ffd93d');
                 this.playSound(800, 0.2);
-                return score;
             }
 
             handleVortexBonus() {
                 let score = 0;
-                const bonusScore = Math.floor(100 * (1 + (this.wave - 1) * 0.1));
+                const bonusScore = Math.floor(100 * (1 + (this.wave - 1) * 0.2));
                 
                 if (this.mode === 'both') {
                     this.score.karina += bonusScore / 2;
@@ -2146,11 +2108,9 @@
                     this.score.danya += bonusScore;
                 }
                 
-                score = bonusScore;
                 this.enemies = [];
                 this.createFloatingText(500, 350, `🌀 ВСЕ!`, '#764ba2');
                 this.playSound(400, 0.3);
-                return score;
             }
 
             handleShieldBonus() {
@@ -2229,40 +2189,51 @@
 
             gameOver() {
                 this.gameState = 'gameover';
+                
+                const totalScore = this.score.karina + this.score.danya;
+                const bestScore = this.records.bestScore || 0;
+                const newRecord = totalScore > bestScore;
+                
+                this.records.bestScore = Math.max(totalScore, bestScore);
+                this.records.bestWave = Math.max(this.wave, this.records.bestWave || 1);
+                this.records.bestCombo = Math.max(this.maxCombo, this.records.bestCombo || 0);
+                this.records.criticalHits = (this.records.criticalHits || 0) + this.criticalHitCount;
+                this.records.gamesPlayed = (this.records.gamesPlayed || 0) + 1;
+                this.saveRecords();
+                
                 document.getElementById('final-wave').textContent = this.wave;
                 document.getElementById('final-karina').textContent = this.score.karina;
                 document.getElementById('final-danya').textContent = this.score.danya;
                 document.getElementById('final-combo').textContent = this.maxCombo;
+                document.getElementById('final-crits').textContent = this.criticalHitCount;
                 document.getElementById('final-bp').textContent = this.battlePassLevel;
                 
                 const minutes = Math.floor(this.gameTime / 60);
                 const seconds = Math.floor(this.gameTime % 60);
                 document.getElementById('final-time').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
                 
-                const totalScore = this.score.karina + this.score.danya;
                 let rewardText = '';
                 
-                if (totalScore > 10000) {
-                    rewardText = '🌟 ЛЕГЕНДАРНЫЙ СКИН!';
-                } else if (totalScore > 7500) {
-                    rewardText = '✨ ЭПИЧЕСКИЙ СКИН!';
-                } else if (totalScore > 5000) {
-                    rewardText = '💎 ПРЕМИУМ СКИН!';
-                } else if (this.wave >= 15) {
-                    rewardText = '⭐ РЕДКИЙ СКИН!';
+                if (newRecord) {
+                    rewardText += '🆕 НОВЫЙ РЕКОРД! ';
+                }
+                
+                if (totalScore > 15000) {
+                    rewardText += '🌟 ЛЕГЕНДАРНЫЙ СКИН!';
+                } else if (totalScore > 10000) {
+                    rewardText += '✨ ЭПИЧЕСКИЙ СКИН!';
+                } else if (totalScore > 7000) {
+                    rewardText += '💎 ПРЕМИУМ СКИН!';
+                } else if (this.wave >= 7) {
+                    rewardText += '⭐ РЕДКИЙ СКИН!';
+                } else if (this.wave >= 5) {
+                    rewardText += '🎁 БОНУС КРИСТАЛЛ!';
                 }
                 
                 if (rewardText) {
                     document.getElementById('reward-box').style.display = 'block';
                     document.getElementById('reward-text').textContent = rewardText;
                 }
-                
-                const finalStats = document.querySelectorAll('.stat-line');
-                const statsDiv = document.querySelector('.final-stats');
-                const newStat = document.createElement('div');
-                newStat.className = 'stat-line';
-                newStat.innerHTML = '🎯 КРИТ УДАРОВ: <span class="stat-value">' + this.critialHitCount + '</span>';
-                statsDiv.appendChild(newStat);
                 
                 document.getElementById('gameOver').classList.remove('hidden');
                 
@@ -2273,6 +2244,9 @@
                 document.getElementById('karina-score').textContent = this.score.karina;
                 document.getElementById('danya-score').textContent = this.score.danya;
                 document.getElementById('wave').textContent = this.wave;
+                
+                const waveProgress = (this.waveTimer / this.waveMaxTime) * 100;
+                document.getElementById('wave-progress').style.width = waveProgress + '%';
                 
                 const livesKarina = '❤️'.repeat(Math.max(0, this.lives.karina)) + 
                     '🖤'.repeat(Math.max(0, 3 - this.lives.karina));
@@ -2285,23 +2259,8 @@
                 document.getElementById('multiplier').textContent = this.multiplier.toFixed(1) + 'x';
                 document.getElementById('combo').textContent = this.combo;
                 document.getElementById('bp-level').textContent = this.battlePassLevel;
-                document.getElementById('challenge').textContent = this.skillPoints;
+                document.getElementById('challenge').textContent = this.criticalHitCount;
                 document.getElementById('difficulty-level').textContent = this.difficulty;
-                
-                // Обновляем отображение очков во время игры
-                if (this.skillPoints > 0) {
-                    document.getElementById('challenge').style.color = '#00d084';
-                    document.getElementById('challenge').style.fontWeight = 'bold';
-                } else {
-                    document.getElementById('challenge').style.color = '#667eea';
-                    document.getElementById('challenge').style.fontWeight = 'normal';
-                }
-                
-                if (this.activeSkill) {
-                    document.getElementById('active-skill').textContent = this.activeSkill;
-                } else {
-                    document.getElementById('active-skill').textContent = '-';
-                }
                 
                 const bossElem = document.getElementById('boss-indicator');
                 if (this.isBossWave && this.wave > 0) {
@@ -2334,6 +2293,39 @@
                     this.ctx.stroke();
                 }
                 
+                if (this.mode === 'both' && this.players.length === 2) {
+                    this.drawSplitScreen();
+                } else {
+                    this.drawGameScreen(0, 0, this.canvas.width, this.canvas.height);
+                }
+            }
+
+            drawSplitScreen() {
+                const midX = this.canvas.width / 2;
+                
+                this.ctx.save();
+                this.ctx.beginPath();
+                this.ctx.rect(0, 0, midX, this.canvas.height);
+                this.ctx.clip();
+                this.drawGameScreen(0, 0, midX, this.canvas.height, 'karina');
+                this.ctx.restore();
+                
+                this.ctx.save();
+                this.ctx.beginPath();
+                this.ctx.rect(midX, 0, midX, this.canvas.height);
+                this.ctx.clip();
+                this.drawGameScreen(midX, 0, midX, this.canvas.height, 'danya');
+                this.ctx.restore();
+                
+                this.ctx.strokeStyle = '#667eea';
+                this.ctx.lineWidth = 3;
+                this.ctx.beginPath();
+                this.ctx.moveTo(midX, 0);
+                this.ctx.lineTo(midX, this.canvas.height);
+                this.ctx.stroke();
+            }
+
+            drawGameScreen(offsetX, offsetY, width, height, playerFilter = null) {
                 for (let enemy of this.enemies) {
                     enemy.draw(this.ctx);
                 }
@@ -2371,7 +2363,36 @@
                     this.animationFrameId = requestAnimationFrame(() => this.animate());
                 }
             }
-            
+
+            saveRecords() {
+                localStorage.setItem('gameRecords', JSON.stringify(this.records));
+            }
+
+            loadRecords() {
+                const saved = localStorage.getItem('gameRecords');
+                if (saved) {
+                    try {
+                        return JSON.parse(saved);
+                    } catch (e) {
+                        return { bestScore: 0, bestWave: 1, bestCombo: 0, criticalHits: 0, gamesPlayed: 0 };
+                    }
+                }
+                return { bestScore: 0, bestWave: 1, bestCombo: 0, criticalHits: 0, gamesPlayed: 0 };
+            }
+
+            loadProgress() {
+                const saved = localStorage.getItem('skillProgress');
+                if (saved) {
+                    try {
+                        const progress = JSON.parse(saved);
+                        this.skillLevel = progress.skillLevel || { speed: 1, accuracy: 1, armor: 1, power: 1, greed: 1 };
+                        this.totalSkillPoints = progress.totalSkillPoints || 0;
+                    } catch (e) {
+                        console.log('Ошибка загрузки прогресса');
+                    }
+                }
+            }
+
             saveProgress() {
                 const progress = {
                     skillLevel: this.skillLevel,
@@ -2379,81 +2400,60 @@
                 };
                 localStorage.setItem('skillProgress', JSON.stringify(progress));
             }
-            
-            loadProgress() {
-                const saved = localStorage.getItem('skillProgress');
-                if (saved) {
-                    try {
-                        const progress = JSON.parse(saved);
-                        this.skillLevel = progress.skillLevel || { speed: 1, accuracy: 1, armor: 1 };
-                        this.totalSkillPoints = progress.totalSkillPoints || 0;
-                    } catch (e) {
-                        console.log('Ошибка загрузки прогресса');
-                    }
-                }
+
+            updateRecordsDisplay() {
+                document.getElementById('best-score').textContent = this.records.bestScore || 0;
+                document.getElementById('best-wave').textContent = this.records.bestWave || 1;
+                document.getElementById('best-combo').textContent = this.records.bestCombo || 0;
+                document.getElementById('crit-count').textContent = this.records.criticalHits || 0;
+                document.getElementById('games-played').textContent = this.records.gamesPlayed || 0;
             }
-            
+
             updateSkillDisplay() {
-                // Обновляем уровни навыков в меню
+                document.getElementById('skill-points-display').textContent = this.totalSkillPoints;
                 document.getElementById('skill-speed-level').textContent = this.skillLevel.speed;
                 document.getElementById('skill-accuracy-level').textContent = this.skillLevel.accuracy;
                 document.getElementById('skill-armor-level').textContent = this.skillLevel.armor;
-                
-                // Обновляем очки
-                document.getElementById('skill-points-display').textContent = this.totalSkillPoints;
-                
-                // Обновляем стоимость
-                const speedCost = this.skillLevel.speed === 1 ? 50 : (this.skillLevel.speed === 2 ? 100 : 150);
-                const accuracyCost = this.skillLevel.accuracy === 1 ? 50 : (this.skillLevel.accuracy === 2 ? 100 : 150);
-                const armorCost = this.skillLevel.armor === 1 ? 50 : (this.skillLevel.armor === 2 ? 100 : 150);
-                
-                document.getElementById('speed-cost').textContent = speedCost;
-                document.getElementById('accuracy-cost').textContent = accuracyCost;
-                document.getElementById('armor-cost').textContent = armorCost;
-                
-                // Отключаем кнопки если недостаточно очков или макс уровень
-                document.getElementById('speed-btn').disabled = this.skillLevel.speed >= 4 || this.totalSkillPoints < speedCost;
-                document.getElementById('accuracy-btn').disabled = this.skillLevel.accuracy >= 4 || this.totalSkillPoints < accuracyCost;
-                document.getElementById('armor-btn').disabled = this.skillLevel.armor >= 4 || this.totalSkillPoints < armorCost;
+                document.getElementById('skill-power-level').textContent = this.skillLevel.power;
+                document.getElementById('skill-greed-level').textContent = this.skillLevel.greed;
             }
-            
-            upgradeSkill(skillType) {
-                // Определяем стоимость в зависимости от текущего уровня
-                const currentLevel = this.skillLevel[skillType];
-                let cost = 50;
-                
-                if (currentLevel === 1) cost = 50;
-                else if (currentLevel === 2) cost = 100;
-                else if (currentLevel === 3) cost = 150;
-                
-                // Проверяем: не макс уровень ли
-                if (currentLevel >= 4) {
+
+            upgradeSkill(skillName) {
+                const skillLevels = {
+                    speed: { max: 4, cost: 30 },
+                    accuracy: { max: 4, cost: 40 },
+                    armor: { max: 4, cost: 35 },
+                    power: { max: 4, cost: 45 },
+                    greed: { max: 4, cost: 50 }
+                };
+
+                const skill = skillLevels[skillName];
+                if (!skill) return;
+
+                if (this.skillLevel[skillName] >= skill.max) {
                     this.showAchievement('⚠️ МАКС УРОВЕНЬ!');
-                    console.log('❌ Навык уже на максимуме:', skillType);
                     return;
                 }
-                
-                // Проверяем: хватает ли очков
-                if (this.totalSkillPoints < cost) {
-                    this.showAchievement('❌ НЕДОСТАТОЧНО ОЧКОВ!');
-                    console.log('❌ Не хватает очков. Нужно:', cost, 'Есть:', this.totalSkillPoints);
-                    return;
+
+                if (this.totalSkillPoints >= skill.cost) {
+                    this.totalSkillPoints -= skill.cost;
+                    this.skillLevel[skillName]++;
+                    this.saveProgress();
+                    this.updateSkillDisplay();
+                    this.showAchievement(`⭐ ${skillName.toUpperCase()} уровень ${this.skillLevel[skillName]}!`);
+                    this.playSound(800, 0.2);
+                } else {
+                    this.showAchievement('❌ Не хватает очков!');
                 }
-                
-                // Все хорошо! Повышаем уровень
-                this.totalSkillPoints -= cost;
-                this.skillLevel[skillType]++;
-                
-                console.log('✅ Навык', skillType, 'улучшен до уровня', this.skillLevel[skillType]);
-                console.log('💰 Осталось очков:', this.totalSkillPoints);
-                
-                // Сохраняем и обновляем дисплей
-                this.saveProgress();
-                this.updateSkillDisplay();
-                
-                // Красивая анимация успеха
-                this.showAchievement('🎉 УЛУЧШЕНО ' + skillType.toUpperCase() + '!');
-                this.playSound(800, 0.2);
+            }
+
+            clearRecords() {
+                if (confirm('⚠️ Очистить ВСЕ рекорды? Это нельзя отменить!')) {
+                    this.records = { bestScore: 0, bestWave: 1, bestCombo: 0, criticalHits: 0, gamesPlayed: 0 };
+                    this.saveRecords();
+                    this.updateRecordsDisplay();
+                    this.showAchievement('🗑️ Рекорды очищены');
+                }
             }
         }
 
@@ -2470,7 +2470,7 @@
                 this.y = y;
                 this.speed = speed;
                 this.game = game;
-                this.radius = isBoss ? 35 : 25;
+                this.radius = isBoss ? 40 : 25;
                 this.rotation = 0;
                 this.rotationSpeed = (Math.random() - 0.5) * 0.15;
                 this.glow = 0;
@@ -2674,6 +2674,7 @@
         }
 
         const game = new Game();
+        game.updateRecordsDisplay();
     </script>
 </body>
 </html>
